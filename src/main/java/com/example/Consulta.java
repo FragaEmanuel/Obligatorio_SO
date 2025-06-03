@@ -2,7 +2,7 @@ package com.example;
 
 
 public class Consulta implements Comparable<Consulta> {
-    enum TipoConsulta { EMERGENCIA, CONTROL, CURACION, ODONTOLOGIA }
+    public enum TipoConsulta { EMERGENCIA, CONTROL, CURACION, ODONTOLOGIA, ANALISIS, CARNE }
     
     private final TipoConsulta tipo;
     private final int tiempoLlegada;
@@ -47,6 +47,7 @@ public class Consulta implements Comparable<Consulta> {
     public int getPrioridad() { return prioridad; }
     public String getIdPaciente() { return idPaciente; }
     public int getTiempoLlegada() { return tiempoLlegada; }
+    public int getDuracionConsulta() { return duracionConsulta; }
 
     @Override
     public int compareTo(Consulta o) {
