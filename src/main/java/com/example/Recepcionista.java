@@ -9,9 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Recepcionista extends Thread {
     
     private final PriorityBlockingQueue<Consulta> colaEmergencias;
-    private final PriorityBlockingQueue<Consulta> colaControl;
-    private final PriorityBlockingQueue<Consulta> colaCuracion;
-    private final PriorityBlockingQueue<Consulta> colaOdontologia;
+    private final PriorityBlockingQueue<Consulta> colaResto;
     
 
     public Semaphore avisaralRecepcionista = new Semaphore(1);
@@ -23,9 +21,7 @@ public class Recepcionista extends Thread {
     public Recepcionista(String nombre) {
         this.nombre = nombre;
         this.colaEmergencias = new PriorityBlockingQueue<>();
-        this.colaControl = new PriorityBlockingQueue<>();
-        this.colaCuracion = new PriorityBlockingQueue<>();
-        this.colaOdontologia = new PriorityBlockingQueue<>();
+        this.colaResto = new PriorityBlockingQueue<>();
     }
 
     public void run() {
@@ -49,13 +45,13 @@ public class Recepcionista extends Thread {
                 colaEmergencias.put(consulta);
                 break;
             case CONTROL:
-                colaControl.put(consulta);
+                colaResto.put(consulta);
                 break;
             case CURACION:
-                colaCuracion.put(consulta);
+                colaResto.put(consulta);
                 break;
             case ODONTOLOGIA:
-                colaOdontologia.put(consulta);
+                colaResto.put(consulta);
                 break;
         }
         hayConsultas.signalAll();
@@ -76,20 +72,9 @@ public class Recepcionista extends Thread {
                 }
                 
                 // 2. Verificar urgencias (prioridad dinámica)
-                if (!colaControl.isEmpty()) {
-                    return colaControl.take();
+                if (!colaResto.isEmpty()) {
+                    return colaResto.take();
                 }
-                
-                // 3. Verificar consultas generales (Round Robin)
-                if (!colaCuracion.isEmpty()) {
-                    return colaCuracion.take();
-                }
-                
-                // 4. Verificar trámites (baja prioridad)
-                if (!colaOdontologia.isEmpty()) {
-                    return colaOdontologia.take();
-                }
-                
                 hayConsultas.await();
             }
         } finally {

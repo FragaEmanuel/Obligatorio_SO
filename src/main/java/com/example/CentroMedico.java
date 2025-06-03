@@ -4,13 +4,13 @@ package com.example;
 
 public class CentroMedico {
     
-    private final int medicosDisponibles;
-    private final int enfermerosDisponibles;
+    private final Doctor[] medicosDisponibles;
+    private final Enfermero[] enfermerosDisponibles;
     private final Recepcionista Recepcionista;
     
     public CentroMedico(int medicos, int enfermeros, boolean salaEmergencia) {
-        this.medicosDisponibles = medicos;
-        this.enfermerosDisponibles = enfermeros;
+        this.medicosDisponibles = new Doctor[medicos];
+        this.enfermerosDisponibles = new Enfermero[enfermeros];
         
         generarEnfermeros(enfermeros);
         generarDoctores(medicos);
@@ -25,9 +25,18 @@ public class CentroMedico {
         }
     }
 
-    public void generarDoctores(int cantidad) {
+    public void iniciarDoctores(int cantidad) {
         for (int i = 0; i < cantidad; i++) {
-            new Doctor("Doctor " + (i + 1),this ).start();
+            Doctor doctor = new Doctor(i + 1, this);
+            doctores.add(doctor);
+            doctor.start();
+        }
+    }
+
+    public void detenerDoctores() {
+        for (Doctor doctor : doctores) {
+            doctor.detener();
+            doctor.interrupt();
         }
     }
 

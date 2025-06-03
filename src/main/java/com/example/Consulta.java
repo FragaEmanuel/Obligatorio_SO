@@ -1,7 +1,7 @@
 package com.example;
 
 
-public class Consulta implements Comparable<Consulta>, Runnable {
+public class Consulta implements Comparable<Consulta> {
     enum TipoConsulta { EMERGENCIA, CONTROL, CURACION, ODONTOLOGIA }
     
     private final TipoConsulta tipo;
@@ -40,30 +40,6 @@ public class Consulta implements Comparable<Consulta>, Runnable {
                // Salta excepcion si no se ha inicializado la simulacion
             }
         }
-    }
-
-    public void run() {
-        while (tiempoLlegada < SimulacionCentroMedico.getHora()) {
-        }
-        switch (this.getTipo()) {
-            case EMERGENCIA:
-                SimulacionCentroMedico.haypacientes.release(); // Avisa a los médicos que hay pacientes
-                SimulacionCentroMedico.medicosdisponibles.acquire(); // Espera a que haya un médico disponible
-               
-                break;
-            case CONTROL:
-                SimulacionCentroMedico.haypacientes.release(); // Avisa a los médicos que hay pacientes
-                SimulacionCentroMedico.medicosdisponibles.acquire(); // Espera a que haya un médico disponible
-                break;
-            case CURACION:
-                SimulacionCentroMedico.pacientesparacurar.release();    // Avisa a los enfermeros que hay pacientes para curar
-                SimulacionCentroMedico.enfermerosdisponibles.acquire();
-                break;
-            case ODONTOLOGIA:
-                //NADA QUE HACER
-                break;
-        }
-        
     }
     
     // Getters
