@@ -9,14 +9,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Recepcionista {
     
     private final PriorityBlockingQueue<Consulta> colaEmergencias;
-    private final PriorityBlockingQueue<Consulta> colaResto;
+    private final PriorityBlockingQueue<Consulta> colaConsultorio;
+    private final PriorityBlockingQueue<Consulta> colaEnfermeria;
     
     private String nombre;
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
         this.colaEmergencias = new PriorityBlockingQueue<>();
-        this.colaResto = new PriorityBlockingQueue<>();
+        this.colaConsultorio = new PriorityBlockingQueue<>();
+        this.colaEnfermeria = new PriorityBlockingQueue<>();
     }
     
 
@@ -27,19 +29,19 @@ public class Recepcionista {
                 SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CONTROL:
-                colaResto.put(consulta);
+                colaConsultorio.put(consulta);
                 SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CARNE:
-                colaResto.put(consulta);
+                colaConsultorio.put(consulta);
                 SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CURACION:
-                colaResto.put(consulta);
+                colaEnfermeria.put(consulta);
                 SimulacionCentroMedico.haypacientesCola2.release();
                 break;
             case ANALISIS:
-                colaResto.put(consulta);
+                colaEnfermeria.put(consulta);
                 SimulacionCentroMedico.haypacientesCola2.release();
                 break;
             case ODONTOLOGIA:
@@ -48,7 +50,7 @@ public class Recepcionista {
     }
 
     
-    public Consulta obtenerSiguienteConsulta() throws InterruptedException {
+    public Consulta obtenerSiguienteConsultaMedico() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
         if (!colaEmergencias.isEmpty()) {
             for (Consulta consulta : colaEmergencias) {
@@ -58,10 +60,24 @@ public class Recepcionista {
         }
             
         // 2. Verificar urgencias (prioridad dinámica)
-        if (!colaResto.isEmpty()) {
-            return colaResto.take();
+        if (!colaConsultorio.isEmpty()) {
+            for (Consulta consulta : colaConsultorio) {
+                consulta.actualizarPrioridad();
+            }
+            return colaConsultorio.take();
         }
         // 3. Si no hay consultas, esperar
+        return null;
+    }
+
+    public Consulta obtenerSiguienteConsultaEnfermeria() throws InterruptedException {
+        if (!colaEnfermeria.isEmpty()) {
+            for (Consulta consulta : colaEnfermeria) {
+                consulta.actualizarPrioridad();
+            }
+            return colaEnfermeria.take();
+        }
+
         return null;
     }
 
