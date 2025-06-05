@@ -6,79 +6,86 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Recepcionista extends Thread {
+public class Recepcionista {
     
-    private final PriorityBlockingQueue<Consulta> colaEmergencias;
-    private final PriorityBlockingQueue<Consulta> colaResto;
-    
-
-    public Semaphore avisaralRecepcionista = new Semaphore(1);
-    private static final Lock lock = new ReentrantLock();
-    private final Condition hayConsultas = lock.newCondition();
+    //private final PriorityBlockingQueue<Consulta> colaEmergencias;
+    private final PriorityBlockingQueue<Consulta> colaConsultorio;
+    private final PriorityBlockingQueue<Consulta> colaEnfermeria;
     
     private String nombre;
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
-        this.colaEmergencias = new PriorityBlockingQueue<>();
-        this.colaResto = new PriorityBlockingQueue<>();
-    }
-
-    public void run() {
-        while (true) { 
-            try {
-                SimulacionCentroMedico.genteParaAtender.acquire(); // Espera a que haya gente para atender 
-                // Logica para atender consultas y agregarlas a las colas
-                
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
-                return; // Salir del bucle si se interrumpe
-            }
-        }
+        //this.colaEmergencias = new PriorityBlockingQueue<>();
+        this.colaConsultorio = new PriorityBlockingQueue<>();
+        this.colaEnfermeria = new PriorityBlockingQueue<>();
     }
     
 
     public void agregarConsulta(Consulta consulta) {
-        lock.lock();
         switch (consulta.getTipo()) {
             case EMERGENCIA:
-                colaEmergencias.put(consulta);
+                //colaEmergencias.put(consulta);
+                colaConsultorio.put(consulta);
+                SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CONTROL:
-                colaResto.put(consulta);
+                colaConsultorio.put(consulta);
+                SimulacionCentroMedico.haypacientesCola1.release();
+                break;
+            case CARNE:
+                colaConsultorio.put(consulta);
+                SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CURACION:
-                colaResto.put(consulta);
+                colaEnfermeria.put(consulta);
+                SimulacionCentroMedico.haypacientesCola2.release();
+                break;
+            case ANALISIS:
+                colaEnfermeria.put(consulta);
+                SimulacionCentroMedico.haypacientesCola2.release();
                 break;
             case ODONTOLOGIA:
-                colaResto.put(consulta);
                 break;
         }
-        hayConsultas.signalAll();
-        lock.unlock();
     }
 
     
-    public Consulta obtenerSiguienteConsulta() throws InterruptedException {
-        lock.lock();
-        try {
-            while (true) {
-                // 1. Verificar emergencias (máxima prioridad)
-                if (!colaEmergencias.isEmpty()) {
-                    for (Consulta consulta : colaEmergencias) {
-                        consulta.actualizarPrioridad();
-                    }
-                    return colaEmergencias.take();
-                }
-                
-                // 2. Verificar urgencias (prioridad dinámica)
-                if (!colaResto.isEmpty()) {
-                    return colaResto.take();
-                }
-                hayConsultas.await();
+    public Consulta obtenerSiguienteConsultaMedico() throws InterruptedException {
+        // 1. Verificar emergencias (máxima prioridad)
+        /*
+        if (!colaEmergencias.isEmpty()) {
+            for (Consulta consulta : colaEmergencias) {
+                consulta.actualizarPrioridad();
             }
-        } finally {
-            lock.unlock();
+            return colaEmergencias.take();
         }
+        */
+            
+        // 2. Verificar urgencias (prioridad dinámica)
+        if (!colaConsultorio.isEmpty()) {
+            for (Consulta consulta : colaConsultorio) {
+                consulta.actualizarPrioridad();
+            }
+            return colaConsultorio.take();
+        }
+        // 3. Si no hay consultas, esperar
+        return null;
+    }
+
+    public Consulta obtenerSiguienteConsultaEnfermeria() throws InterruptedException {
+        if (!colaEnfermeria.isEmpty()) {
+            for (Consulta consulta : colaEnfermeria) {
+                consulta.actualizarPrioridad();
+            }
+            return colaEnfermeria.take();
+        }
+
+        return null;
+    }
+
+    public static boolean HayConsultas(){
+        return !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaEmergencias().isEmpty() || 
+        !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaResto().isEmpty();
     }
 }

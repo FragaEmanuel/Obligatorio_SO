@@ -8,7 +8,7 @@ public class CentroMedico {
     private final Enfermero[] enfermerosDisponibles;
     private final Recepcionista Recepcionista;
     
-    public CentroMedico(int medicos, int enfermeros, boolean salaEmergencia) {
+    public CentroMedico(int medicos, int enfermeros) {
         this.medicosDisponibles = new Doctor[medicos];
         this.enfermerosDisponibles = new Enfermero[enfermeros];
         
@@ -21,22 +21,16 @@ public class CentroMedico {
 
     public void generarEnfermeros(int cantidad) {
         for (int i = 0; i < cantidad; i++) {
-            new Enfermero("Enfermero " + (i + 1)).start();
+            new Enfermero("Enfermero " + (i + 1),this).start();
+            SimulacionCentroMedico.enfermerosdisponibles.release();
         }
     }
-
-    public void iniciarDoctores(int cantidad) {
+    public void generarDoctores(int cantidad) {
         for (int i = 0; i < cantidad; i++) {
-            Doctor doctor = new Doctor(i + 1, this);
-            doctores.add(doctor);
+            Doctor doctor = new Doctor("Doctor " + (i + 1), this);
+            medicosDisponibles[i] = doctor;
             doctor.start();
-        }
-    }
-
-    public void detenerDoctores() {
-        for (Doctor doctor : doctores) {
-            doctor.detener();
-            doctor.interrupt();
+            SimulacionCentroMedico.medicosdisponibles.release();
         }
     }
 

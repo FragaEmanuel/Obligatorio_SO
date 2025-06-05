@@ -3,12 +3,11 @@ package com.example;
 import javax.swing.CellEditor;
 
 public class Doctor extends Thread {
-    int idDoctor;
+    String idDoctor;
     int horaEntrada;
     CentroMedico centroMedico;
-    Boolean trabajando;
 
-    public Doctor(int idDoctor, CentroMedico centroMedico) {
+    public Doctor(String idDoctor, CentroMedico centroMedico) {
         this.centroMedico = centroMedico;
         this.idDoctor = idDoctor;
         SimulacionCentroMedico.medicosdisponibles.release();
@@ -16,18 +15,26 @@ public class Doctor extends Thread {
 
     @Override
     public void run() {
-        SimulacionCentroMedico.haypacientes.acquire();
-        while (trabajando && !isInterrupted()) {
+        while (SimulacionCentroMedico.getHora() < 720) {
+            if (centroMedico.getRecepcionista().HayConsultas() == false) {
+                SimulacionCentroMedico.haypacientes.acquire();
+            }
+
+            SimulacionCentroMedico.haypacientesCola1.acquire();
+            SimulacionCentroMedico.enfermerosdisponibles.acquire();
+
             try {
                 Consulta consulta = centroMedico.getRecepcionista().obtenerSiguienteConsulta();
+                
                 int horaAtendido = SimulacionCentroMedico.getHora();
                 while (SimulacionCentroMedico.getHora() > horaAtendido + consulta.getDuracionConsulta()){
-                    // Simula el tiempo de atención del médico
+                // Simula el tiempo de atención del médico
                 }
-                SimulacionCentroMedico.medicosdisponibles.release(); // Libera el médico para que pueda atender a otro paciente
-
             } catch (InterruptedException e) {
-                break;
+                SimulacionCentroMedico.haypacientesCola1.release();
+            } finally { 
+                SimulacionCentroMedico.medicosdisponibles.release(); // Libera el médico para que pueda atender a otro paciente
+                SimulacionCentroMedico.enfermerosdisponibles.release();
             }
         }
     }
