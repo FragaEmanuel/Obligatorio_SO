@@ -63,6 +63,10 @@ public class Consulta implements Comparable<Consulta> {
     @Override
     public int compareTo(Consulta o) {
         // Prioridad más alta primero
-        return Integer.compare(o.prioridad, this.prioridad);
+        int cmp = Integer.compare(o.prioridad, this.prioridad);
+        if (cmp == 0) {
+            return Integer.compare(this.tiempoLlegada, o.tiempoLlegada); // Si prioridades iguales, comparar por tiempo de llegada
+        }
+        return cmp;
     }
 }
