@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Recepcionista {
     
-    private final PriorityBlockingQueue<Consulta> colaEmergencias;
+    //private final PriorityBlockingQueue<Consulta> colaEmergencias;
     private final PriorityBlockingQueue<Consulta> colaConsultorio;
     private final PriorityBlockingQueue<Consulta> colaEnfermeria;
     
@@ -16,7 +16,7 @@ public class Recepcionista {
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
-        this.colaEmergencias = new PriorityBlockingQueue<>();
+        //this.colaEmergencias = new PriorityBlockingQueue<>();
         this.colaConsultorio = new PriorityBlockingQueue<>();
         this.colaEnfermeria = new PriorityBlockingQueue<>();
     }
@@ -25,7 +25,8 @@ public class Recepcionista {
     public void agregarConsulta(Consulta consulta) {
         switch (consulta.getTipo()) {
             case EMERGENCIA:
-                colaEmergencias.put(consulta);
+                //colaEmergencias.put(consulta);
+                colaConsultorio.put(consulta);
                 SimulacionCentroMedico.haypacientesCola1.release();
                 break;
             case CONTROL:
@@ -52,12 +53,14 @@ public class Recepcionista {
     
     public Consulta obtenerSiguienteConsultaMedico() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
+        /*
         if (!colaEmergencias.isEmpty()) {
             for (Consulta consulta : colaEmergencias) {
                 consulta.actualizarPrioridad();
             }
             return colaEmergencias.take();
         }
+        */
             
         // 2. Verificar urgencias (prioridad dinámica)
         if (!colaConsultorio.isEmpty()) {
