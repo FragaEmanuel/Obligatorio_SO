@@ -1,9 +1,15 @@
 package com.example;
 
+import sun.jvm.hotspot.interpreter.OffsetClosure;
+
 
 public class Enfermero extends Thread {
     String nombre;
     CentroMedico centroMedico;
+    boolean ocupado = false;
+    Consulta consultaatendida = null;
+    int duracionconsultaactual;
+    int contadorduracion;
 
     public Enfermero(String nombre, CentroMedico centroMedico) {
        
@@ -14,27 +20,45 @@ public class Enfermero extends Thread {
 
     @Override
     public void run() {
-        while (SimulacionCentroMedico.getHora() < 720) {
-            if (centroMedico.getRecepcionista().HayConsultas() == false) {
-                SimulacionCentroMedico.haypacientes.acquire();
-            }
-
-            SimulacionCentroMedico.haypacientesCola2.acquire();
-            SimulacionCentroMedico.enfermerosdisponibles.acquire();
-
-            try {
-                Consulta consulta = centroMedico.getRecepcionista().obtenerSiguienteConsulta();
-                
-                int horaAtendido = SimulacionCentroMedico.getHora();
-                while (SimulacionCentroMedico.getHora() > horaAtendido + consulta.getDuracionConsulta()){
-                // Simula el tiempo de atención del médo
+        while (true) {
+            synchronized (SimulacionCentroMedico.getLock()) {
+                try {
+                    SimulacionCentroMedico.getLock().wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
-            } catch (InterruptedException e) {
-                SimulacionCentroMedico.haypacientesCola2.release();
-            } finally { 
-                SimulacionCentroMedico.medicosdisponibles.release(); // Libera el médico para que pueda atender a otro paciente
-                SimulacionCentroMedico.enfermerosdisponibles.release();
+    
+                if (ocupado) {
+                    if (contadorduracion < duracionconsultaactual)
+                    contadorduracion++;
+                    else {
+                        ocupado = false;
+                        consultaatendida = null;
+                        duracionconsultaactual = 0;
+                        contadorduracion = 0;
+                        SimulacionCentroMedico.enfermerosdisponibles.release();
+                    }
+                } else {
+                    SimulacionCentroMedico.haysala.acquire();
+                    SimulacionCentroMedico.haypacientesCola2.acquire();
+
+                    try {
+                        centroMedico.getRecepcionista().getLock().lock();
+                        try {
+                        consultaatendida = centroMedico.getRecepcionista().obtenerSiguienteConsultaMedico();
+                        } finally {
+                            centroMedico.getRecepcionista().getLock().unlock();
+                        }
+                        int horaAtendido = SimulacionCentroMedico.getHora();
+                        ocupado = true;
+                        duracionconsultaactual = consultaatendida.getDuracionConsulta();
+
+                    } catch (InterruptedException e) {
+                        SimulacionCentroMedico.haypacientesCola2.release();
+                    }
+                }
             }
-        }
+        }   
     }
 }

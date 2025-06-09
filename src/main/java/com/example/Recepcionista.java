@@ -13,6 +13,7 @@ public class Recepcionista {
     private final PriorityBlockingQueue<Consulta> colaEnfermeria;
     
     private String nombre;
+    private final Lock lock = new ReentrantLock();
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
@@ -66,6 +67,10 @@ public class Recepcionista {
         if (!colaConsultorio.isEmpty()) {
             for (Consulta consulta : colaConsultorio) {
                 consulta.actualizarPrioridad();
+                if (!consulta.EsValida()) {
+                    colaConsultorio.remove(consulta); // Eliminar consultas no válidas
+                    SimulacionCentroMedico.incrementarContadorEmergenciasPerdidas();
+                }
             }
             return colaConsultorio.take();
         }
@@ -87,5 +92,9 @@ public class Recepcionista {
     public static boolean HayConsultas(){
         return !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaEmergencias().isEmpty() || 
         !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaResto().isEmpty();
+    }
+
+    public Lock getLock(){
+        return lock;
     }
 }

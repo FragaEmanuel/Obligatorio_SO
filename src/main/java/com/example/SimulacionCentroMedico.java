@@ -10,6 +10,8 @@ import com.example.Consulta.TipoConsulta;
 public class SimulacionCentroMedico {
 
     private static int Hora;
+    private static final Object lock = new Object();
+    private static int contadorEmergenciasPerdidas = 0;
 
     static Semaphore haysala = new Semaphore(1);
     static Semaphore haysalaEmergencia = new Semaphore(1);
@@ -22,6 +24,14 @@ public class SimulacionCentroMedico {
 
     public static int getHora() {
         return Hora;
+    }
+
+    public static Object getLock() {
+        return lock;
+    }
+
+    public static void incrementarContadorEmergenciasPerdidas() {
+        contadorEmergenciasPerdidas++;
     }
 
     public static void iniciar() {
@@ -53,20 +63,17 @@ public class SimulacionCentroMedico {
                 consultas.add(consulta);
             }
         }
-        consultas.sort((c1, c2) -> Integer.compare(c1.getTiempoLlegada(), c2.getTiempoLlegada()));
-
-        LlegadaPacientes llegadaPacientes = new LlegadaPacientes(centro, consultas);
-        llegadaPacientes.start();
+        for (Consulta consulta : consultas) {
+            centro.getRecepcionista().agregarConsulta(consulta);
+        }
 
         while (Hora < 720) {
-            try {
-                Thread.sleep(1000); // Simula el paso del tiempo en minutos
-                Hora++;
-            } catch (InterruptedException e) {
-                System.out.println("Error al simular el tiempo: " + e.getMessage());
-            }
-        }
+            synchronized (lock) {
+        Hora++;
+        lock.notifyAll(); // Notifica a todos los hilos que esperan en 'lock'
         }
 
+        }
+    }
 }
 
