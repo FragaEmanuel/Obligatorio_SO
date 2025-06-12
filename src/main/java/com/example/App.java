@@ -4,6 +4,8 @@ package com.example;
  * Hello world!
  *
  */
+
+/* Prueba De la parte integrada de l maneja de hilos
 public class App 
 {
     public static void main( String[] args )
@@ -51,5 +53,5 @@ class pruebaprioralta extends Thread{
     public void run() {
             System.out.println("Prioridad alta");
     }
-}
+}*/
 
