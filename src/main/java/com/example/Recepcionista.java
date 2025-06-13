@@ -4,8 +4,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.example.Consulta.TipoConsulta;
-
 public class Recepcionista {
     
     //private final PriorityBlockingQueue<Consulta> colaEmergencias;
@@ -38,6 +36,7 @@ public class Recepcionista {
         }
     }
 
+    //version más segura de obtenersiguienteconsulta para que no se acumulen consultas fuera de la cola
     public Consulta obtenerSiguienteConsultaPreventivo() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
         if (!colaConsultorio.isEmpty()) {
@@ -46,77 +45,54 @@ public class Recepcionista {
             }
             Consulta consultaPeek = colaConsultorio.peek();
             if (consultaPeek != null && consultaPeek.getTiempoLlegada() == SimulacionCentroMedico.getHora()){
-                TipoConsulta tipo = consultaPeek.getTipo();
-                if (tipo == TipoConsulta.CONTROL || tipo == TipoConsulta.CARNE || tipo == TipoConsulta.EMERGENCIA){
-                    if (SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0){
-                        return colaConsultorio.take();
-                    }
-                } else {
-                    if (SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0){
-                        return colaConsultorio.take();
-                    }
+                boolean recursosDisponibles = false;        //revisa si hay recursos
+                switch (consultaPeek.getTipo()) {
+                    case EMERGENCIA:
+                        recursosDisponibles = 
+                            SimulacionCentroMedico.haysalaEmergencia.availablePermits() > 0 &&
+                            SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
+                            SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                        break;
+                    case CONTROL:
+                    case CARNE:
+                        recursosDisponibles = 
+                            SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
+                            SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
+                            SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                        break;
+                    case CURACION:
+                    case ANALISIS:
+                        recursosDisponibles = 
+                            SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
+                            SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                        break;
+                    case ODONTOLOGIA:
+                        // Ajusta según recursos para odontología
+                        recursosDisponibles = true;
+                        break;
                 }
+                if (recursosDisponibles) {              //si hay recursos disponibles para dicha consulta la saca de la cola y la devuelve.
+                    colaConsultorio.remove(consultaPeek);
+                    return consultaPeek;
+                }
+                return null;            //si no hay recursos retorna null
+            } else {
+                return null;            //si la hora no coincide retorna null
             }
-            return null;
         } else {
-            return null;
-        }
-    }
-
-    public Consulta obtenerSiguienteConsultaMasRobusto() throws InterruptedException{
-        lock.lock();
-        try {
-            for (Consulta consulta : colaConsultorio) {
-                if (consulta.getTiempoLlegada() == SimulacionCentroMedico.getHora()) {
-                    // Verifica recursos según el tipo de consulta
-                    boolean recursosDisponibles = false;
-                    switch (consulta.getTipo()) {
-                        case EMERGENCIA:
-                            recursosDisponibles = 
-                                SimulacionCentroMedico.haysalaEmergencia.availablePermits() > 0 &&
-                                SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
-                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
-                            break;
-                        case CONTROL:
-                        case CARNE:
-                            recursosDisponibles = 
-                                SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
-                                SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
-                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
-                            break;
-                        case CURACION:
-                        case ANALISIS:
-                            recursosDisponibles = 
-                                SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
-                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
-                            break;
-                        case ODONTOLOGIA:
-                            // Ajusta según recursos para odontología
-                            recursosDisponibles = true;
-                            break;
-                    }
-                    if (recursosDisponibles) {
-                        colaConsultorio.remove(consulta);
-                        return consulta;
-                    }
-                } else {
-                    break;}
-            }
-            return null;
-        } finally {
-            lock.unlock();
+            return null;    //si la cola está vacia la cola retorna null
         }
     }
     
     public void atenderConsultasCorrespondientes() throws InterruptedException{
         boolean x = true;
-        while (x) {
+        while (x) {                                                 //va sacando consultas validas hasta que x sea falso
             Consulta consul = obtenerSiguienteConsulta();
-            if (consul == null) {
+            if (consul == null) {                                   //cuando el metodo para obtener la siguiente consulta devulva null significa que no hay consultas que puedan salir en ese minuto
                 x = false;
             } else {
-                SimulacionCentroMedico.ObtenerRecursos.acquire();
-                consul.start();
+                SimulacionCentroMedico.ObtenerRecursos.acquire();       //no se si esto es util, casi seguro que no
+                consul.start();     //inicia el hilo
                 
                 SimulacionCentroMedico.ObtenerRecursos.release();
             }
