@@ -1,97 +1,81 @@
 package com.example;
 
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import com.example.Consulta.TipoConsulta;
 
 public class Recepcionista {
     
     //private final PriorityBlockingQueue<Consulta> colaEmergencias;
     private final PriorityBlockingQueue<Consulta> colaConsultorio;
-    private final PriorityBlockingQueue<Consulta> colaEnfermeria;
     
     private String nombre;
     private final Lock lock = new ReentrantLock();
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
-        //this.colaEmergencias = new PriorityBlockingQueue<>();
         this.colaConsultorio = new PriorityBlockingQueue<>();
-        this.colaEnfermeria = new PriorityBlockingQueue<>();
     }
     
 
     public void agregarConsulta(Consulta consulta) {
-        switch (consulta.getTipo()) {
-            case EMERGENCIA:
-                //colaEmergencias.put(consulta);
-                colaConsultorio.put(consulta);
-                SimulacionCentroMedico.haypacientesCola1.release();
-                break;
-            case CONTROL:
-                colaConsultorio.put(consulta);
-                SimulacionCentroMedico.haypacientesCola1.release();
-                break;
-            case CARNE:
-                colaConsultorio.put(consulta);
-                SimulacionCentroMedico.haypacientesCola1.release();
-                break;
-            case CURACION:
-                colaEnfermeria.put(consulta);
-                SimulacionCentroMedico.haypacientesCola2.release();
-                break;
-            case ANALISIS:
-                colaEnfermeria.put(consulta);
-                SimulacionCentroMedico.haypacientesCola2.release();
-                break;
-            case ODONTOLOGIA:
-                break;
-        }
+        colaConsultorio.add(consulta);
     }
 
-    
-    public Consulta obtenerSiguienteConsultaMedico() throws InterruptedException {
+    public Consulta obtenerSiguienteConsulta() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
-        /*
-        if (!colaEmergencias.isEmpty()) {
-            for (Consulta consulta : colaEmergencias) {
-                consulta.actualizarPrioridad();
-            }
-            return colaEmergencias.take();
-        }
-        */
-            
-        // 2. Verificar urgencias (prioridad dinámica)
         if (!colaConsultorio.isEmpty()) {
             for (Consulta consulta : colaConsultorio) {
                 consulta.actualizarPrioridad();
-                if (!consulta.EsValida()) {
-                    colaConsultorio.remove(consulta); // Eliminar consultas no válidas
-                    SimulacionCentroMedico.incrementarContadorEmergenciasPerdidas();
-                }
             }
-            return colaConsultorio.take();
+            if (colaConsultorio.peek().getTiempoLlegada() == SimulacionCentroMedico.getHora()){
+                return colaConsultorio.take();
+            } else return null;
+        } else {
+            return null;
         }
-        // 3. Si no hay consultas, esperar
-        return null;
     }
 
-    public Consulta obtenerSiguienteConsultaEnfermeria() throws InterruptedException {
-        if (!colaEnfermeria.isEmpty()) {
-            for (Consulta consulta : colaEnfermeria) {
+    public Consulta obtenerSiguienteConsultaPreventivo() throws InterruptedException {
+        // 1. Verificar emergencias (máxima prioridad)
+        if (!colaConsultorio.isEmpty()) {
+            for (Consulta consulta : colaConsultorio) {
                 consulta.actualizarPrioridad();
             }
-            return colaEnfermeria.take();
+            Consulta consultaPeek = colaConsultorio.peek();
+            if (consultaPeek != null && consultaPeek.getTiempoLlegada() == SimulacionCentroMedico.getHora()){
+                TipoConsulta tipo = consultaPeek.getTipo();
+                if (tipo == TipoConsulta.CONTROL || tipo == TipoConsulta.CARNE || tipo == TipoConsulta.EMERGENCIA){
+                    if (SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0){
+                        return colaConsultorio.take();
+                    }
+                } else {
+                    if (SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0 && SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0){
+                        return colaConsultorio.take();
+                    }
+                }
+            }
+            return null;
+        } else {
+            return null;
         }
-
-        return null;
     }
-
-    public static boolean HayConsultas(){
-        return !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaEmergencias().isEmpty() || 
-        !SimulacionCentroMedico.getCentroMedico().getRecepcionista().getColaResto().isEmpty();
+    
+    public void atenderConsultasCorrespondientes() throws InterruptedException{
+        boolean x = true;
+        while (x) {
+            Consulta consul = obtenerSiguienteConsulta();
+            if (consul == null) {
+                x = false;
+            } else {
+                SimulacionCentroMedico.ObtenerRecursos.acquire();
+                consul.start();
+                
+                SimulacionCentroMedico.ObtenerRecursos.release();
+            }
+        }
     }
 
     public Lock getLock(){

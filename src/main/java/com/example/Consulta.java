@@ -1,21 +1,26 @@
 package com.example;
 
+import com.example.Consulta.TipoConsulta;
 
-public class Consulta implements Comparable<Consulta> {
+
+public class Consulta extends Thread implements Comparable<Consulta> {
     public enum TipoConsulta { EMERGENCIA, CONTROL, CURACION, ODONTOLOGIA, ANALISIS, CARNE }
     
     private final TipoConsulta tipo;
-    private final int tiempoLlegada;
+    private final int horaLlegada;
     private int prioridad;
     private final String idPaciente;
     private final int duracionConsulta;
-    private static final int TIEMPO_LIMITE_EMERGENCIA = 240; // minutos
-    private boolean Valida = true; // Indica si la consulta es válida
+    private boolean pendiente = true;
+
+    private boolean analisisSangre;
+    private boolean analisisOrina;
+    private boolean informeOdontologico;
     
     public Consulta(TipoConsulta tipo, String idPaciente, int horaLlegada,int duracionConsulta) {
         this.tipo = tipo;
         this.idPaciente = idPaciente;
-        this.tiempoLlegada = horaLlegada;
+        this.horaLlegada = horaLlegada;
         this.duracionConsulta = duracionConsulta;
         this.prioridad = calcularPrioridadInicial();
     }
@@ -35,17 +40,17 @@ public class Consulta implements Comparable<Consulta> {
     public void actualizarPrioridad() {
         if (this.tipo == TipoConsulta.EMERGENCIA) {
             try {
-                int tiempoEspera = (SimulacionCentroMedico.getHora() - tiempoLlegada); // minutos
+                int tiempoEspera = (SimulacionCentroMedico.getHora() - horaLlegada); // minutos
                 this.prioridad = Math.min(95, prioridad + tiempoEspera / 5); // Aumenta prioridad cada 5 minutos
                 if (tiempoEspera > 120) {
-                     this.Valida = false; // Consulta no válida si excede el tiempo límit
+                    this.pendiente = false; // Consulta no válida si excede el tiempo límit
                 }
             } catch (Exception e) { 
                // Salta excepcion si no se ha inicializado la simulacion
             }
         } else {
              try {
-                int tiempoEspera = (SimulacionCentroMedico.getHora() - tiempoLlegada); 
+                int tiempoEspera = (SimulacionCentroMedico.getHora() - horaLlegada); 
                 this.prioridad = Math.min(95, prioridad + (tiempoEspera / 10)); //Aumenta prioridad cada 10 minutos
             } catch (Exception e) { 
                // Salta excepcion si no se ha inicializado la simulacion
@@ -57,13 +62,13 @@ public class Consulta implements Comparable<Consulta> {
     public TipoConsulta getTipo() { return tipo; }
     public int getPrioridad() { return prioridad; }
     public String getIdPaciente() { return idPaciente; }
-    public int getTiempoLlegada() { return tiempoLlegada; }
+    public int getTiempoLlegada() { return horaLlegada; }
     public int getDuracionConsulta() { return duracionConsulta; }
 
     @Override
     public int compareTo(Consulta o) {
         // Prioridad más alta primero
-        int cmp = Integer.compare(this.tiempoLlegada, o.tiempoLlegada); // Primero comparar por tiempo de llegada
+        int cmp = Integer.compare(this.horaLlegada, o.horaLlegada); // Primero comparar por tiempo de llegada
         if (cmp == 0) {
             cmp = Integer.compare(o.prioridad, this.prioridad); // Si tiempos iguales, comparar por prioridad
         }
@@ -71,6 +76,111 @@ public class Consulta implements Comparable<Consulta> {
     }
 
     public boolean EsValida() {
-        return Valida;
+        return pendiente;
+    }
+
+    @Override
+    public void run() {
+        try {
+            // Esperar hasta que llegue la hora de la consulta
+            while (SimulacionCentroMedico.getHora() < horaLlegada && pendiente) {
+                synchronized (SimulacionCentroMedico.getLock()) {
+                    SimulacionCentroMedico.getLock().wait();
+                }
+            }
+
+            // Intentar adquirir los recursos necesarios según el tipo de consulta
+            boolean recursosObtenidos = false;
+            while (!recursosObtenidos && pendiente) {
+                try {
+                    switch (tipo) {
+                        case EMERGENCIA:
+                            SimulacionCentroMedico.haysalaEmergencia.acquire();
+                            SimulacionCentroMedico.medicosdisponibles.acquire();
+                            SimulacionCentroMedico.enfermerosdisponibles.acquire();
+                            recursosObtenidos = true;
+                            break;
+                        case CONTROL:
+                        case CARNE:
+                            SimulacionCentroMedico.consultaoriodisponibles.acquire();
+                            SimulacionCentroMedico.medicosdisponibles.acquire();
+                            SimulacionCentroMedico.enfermerosdisponibles.acquire();
+                            recursosObtenidos = true;
+                            break;
+                        case CURACION:
+                            SimulacionCentroMedico.consultaoriodisponibles.acquire();
+                            SimulacionCentroMedico.enfermerosdisponibles.acquire();
+                            recursosObtenidos = true;
+                            break;
+                        case ANALISIS:
+                            SimulacionCentroMedico.consultaoriodisponibles.acquire();
+                            SimulacionCentroMedico.enfermerosdisponibles.acquire();
+                            recursosObtenidos = true;
+                            break;
+                        case ODONTOLOGIA:
+                            // Implementa lógica específica si tienes recursos para odontología
+                            recursosObtenidos = true;
+                            break;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    pendiente = false;
+                    break;
+                }
+            }
+
+            // Simular la atención de la consulta
+            if (recursosObtenidos && pendiente) {
+                if (tipo != TipoConsulta.CARNE || (analisisOrina && analisisSangre)){
+                    for (int i = 0; i < duracionConsulta; i++) {
+                        synchronized (SimulacionCentroMedico.getLock()) {
+                            SimulacionCentroMedico.getLock().wait();
+                        }
+                    }
+                }
+                pendiente = false;
+                // Registrar consulta atendida
+                synchronized (SimulacionCentroMedico.class) {
+                    SimulacionCentroMedico.consultasAtendidas++;
+                    SimulacionCentroMedico.atendidasPorTipo.merge(tipo, 1, Integer::sum);
+                }
+            } else if (!pendiente) {
+                // Registrar consulta perdida
+                synchronized (SimulacionCentroMedico.class) {
+                    SimulacionCentroMedico.consultasPerdidas++;
+                    SimulacionCentroMedico.perdidasPorTipo.merge(tipo, 1, Integer::sum);
+                }
+            }
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            // Liberar recursos según el tipo de consulta
+            switch (tipo) {
+                case EMERGENCIA:
+                    SimulacionCentroMedico.haysalaEmergencia.release();
+                    SimulacionCentroMedico.medicosdisponibles.release();
+                    SimulacionCentroMedico.enfermerosdisponibles.release();
+                    break;
+                case CONTROL:
+                case CARNE:
+                    SimulacionCentroMedico.consultaoriodisponibles.release();
+                    SimulacionCentroMedico.medicosdisponibles.release();
+                    SimulacionCentroMedico.enfermerosdisponibles.release();
+                    break;
+                case CURACION:
+                    SimulacionCentroMedico.consultaoriodisponibles.release();
+                    SimulacionCentroMedico.enfermerosdisponibles.release();
+                case ANALISIS:
+                    analisisSangre = true;
+                    analisisOrina = true;
+                    SimulacionCentroMedico.consultaoriodisponibles.release();
+                    SimulacionCentroMedico.enfermerosdisponibles.release();
+                    break;
+                case ODONTOLOGIA:
+                    // Libera recursos específicos si corresponde
+                    break;
+            }
+        }
     }
 }

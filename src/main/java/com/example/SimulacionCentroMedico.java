@@ -1,7 +1,9 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -9,18 +11,27 @@ import com.example.Consulta.TipoConsulta;
 
 public class SimulacionCentroMedico {
 
+    //Atributos comunes
+
     private static int Hora;
     private static final Object lock = new Object();
-    private static int contadorEmergenciasPerdidas = 0;
 
-    static Semaphore haysala = new Semaphore(1);
+    //Semaforos
+
+    static Semaphore consultaoriodisponibles;
     static Semaphore haysalaEmergencia = new Semaphore(1);
     static Semaphore medicosdisponibles;
     static Semaphore enfermerosdisponibles;
-    static Semaphore pacientesparacurar = new Semaphore(0);
-    static Semaphore genteParaAtender = new Semaphore(0);
-    static Semaphore haypacientesCola1 = new Semaphore(0);
-    static Semaphore haypacientesCola2 = new Semaphore(0);
+    static Semaphore ObtenerRecursos = new Semaphore(1);
+
+    //Registro
+
+    public static int consultasAtendidas = 0;
+    public static int consultasPerdidas = 0;
+    // Puedes usar mapas para estadísticas por tipo
+    public static Map<Consulta.TipoConsulta, Integer> atendidasPorTipo = new HashMap<>();
+    public static Map<Consulta.TipoConsulta, Integer> perdidasPorTipo = new HashMap<>();
+        
 
     public static int getHora() {
         return Hora;
@@ -30,13 +41,14 @@ public class SimulacionCentroMedico {
         return lock;
     }
 
-    public static void incrementarContadorEmergenciasPerdidas() {
-        contadorEmergenciasPerdidas++;
-    }
-
-    public static void iniciar() {
+    public static void iniciar() throws InterruptedException {
 
         Scanner scanner = new Scanner(System.in);
+
+        
+        System.out.print("Número de consultorios: ");
+        int consultorio = scanner.nextInt();
+        consultaoriodisponibles = new Semaphore(consultorio);
         
         System.out.print("Número de médicos: ");
         int medicos = scanner.nextInt();
@@ -48,7 +60,7 @@ public class SimulacionCentroMedico {
         enfermerosdisponibles = new Semaphore(enfermeros);
        
         
-        CentroMedico centro = new CentroMedico(medicos, enfermeros);
+        CentroMedico centro = new CentroMedico(medicos, enfermeros, consultorio);
     
         List<Consulta> consultas = new ArrayList<>();
         ManejadorArchivosGenerico manejador = new ManejadorArchivosGenerico();
@@ -69,11 +81,17 @@ public class SimulacionCentroMedico {
 
         while (Hora < 720) {
             synchronized (lock) {
-        Hora++;
-        lock.notifyAll(); // Notifica a todos los hilos que esperan en 'lock'
-        }
+                lock.notifyAll(); // Notifica a todos los hilos que esperan en 'lock'
+            }
+            centro.getRecepcionista().atenderConsultasCorrespondientes();
+            Hora++;
 
         }
+
+        System.out.println("Consultas atendidas: " + consultasAtendidas);
+        System.out.println("Consultas perdidas: " + consultasPerdidas);
+        System.out.println("Atendidas por tipo: " + atendidasPorTipo);
+        System.out.println("Perdidas por tipo: " + perdidasPorTipo);
     }
 }
 
