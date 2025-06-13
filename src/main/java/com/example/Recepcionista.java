@@ -62,6 +62,51 @@ public class Recepcionista {
             return null;
         }
     }
+
+    public Consulta obtenerSiguienteConsultaMasRobusto() throws InterruptedException{
+        lock.lock();
+        try {
+            for (Consulta consulta : colaConsultorio) {
+                if (consulta.getTiempoLlegada() == SimulacionCentroMedico.getHora()) {
+                    // Verifica recursos según el tipo de consulta
+                    boolean recursosDisponibles = false;
+                    switch (consulta.getTipo()) {
+                        case EMERGENCIA:
+                            recursosDisponibles = 
+                                SimulacionCentroMedico.haysalaEmergencia.availablePermits() > 0 &&
+                                SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
+                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                            break;
+                        case CONTROL:
+                        case CARNE:
+                            recursosDisponibles = 
+                                SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
+                                SimulacionCentroMedico.medicosdisponibles.availablePermits() > 0 &&
+                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                            break;
+                        case CURACION:
+                        case ANALISIS:
+                            recursosDisponibles = 
+                                SimulacionCentroMedico.consultaoriodisponibles.availablePermits() > 0 &&
+                                SimulacionCentroMedico.enfermerosdisponibles.availablePermits() > 0;
+                            break;
+                        case ODONTOLOGIA:
+                            // Ajusta según recursos para odontología
+                            recursosDisponibles = true;
+                            break;
+                    }
+                    if (recursosDisponibles) {
+                        colaConsultorio.remove(consulta);
+                        return consulta;
+                    }
+                } else {
+                    break;}
+            }
+            return null;
+        } finally {
+            lock.unlock();
+        }
+    }
     
     public void atenderConsultasCorrespondientes() throws InterruptedException{
         boolean x = true;
