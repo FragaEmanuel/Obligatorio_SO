@@ -1,50 +1,51 @@
 package com.example;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Recepcionista {
     
-    //private final PriorityBlockingQueue<Consulta> colaEmergencias;
-    private final PriorityBlockingQueue<Consulta> colaConsultorio;
+    private final PriorityBlockingQueue<Consulta> colaConsultasPorHora; //Cola de consultas ordenadas por hora
+    private final PriorityQueue<Consulta> colaConsultasListas;  //Cola de consultas ordenada por prioridad
+
     
     private String nombre;
     private final Lock lock = new ReentrantLock();
 
     public Recepcionista(String nombre) {
         this.nombre = nombre;
-        this.colaConsultorio = new PriorityBlockingQueue<>();
+        this.colaConsultasPorHora = new PriorityBlockingQueue<>();
+        this.colaConsultasListas = new PriorityQueue<>(Comparator.comparingInt(Consulta::getPrioridad).reversed());
     }
     
-
-    public void agregarConsulta(Consulta consulta) {
-        colaConsultorio.add(consulta);
+    //agrega consulta
+    public void agregarConsulta(Consulta consulta) {    
+        colaConsultasPorHora.add(consulta);
     }
 
-    public Consulta obtenerSiguienteConsulta() throws InterruptedException {
+    //obtiene una consulta que cumpla la hora, sino retorna nulo
+    public Consulta obtenerSiguienteConsultaPorHora() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
-        if (!colaConsultorio.isEmpty()) {
-            for (Consulta consulta : colaConsultorio) {
-                consulta.actualizarPrioridad();
-            }
-            if (colaConsultorio.peek().getTiempoLlegada() == SimulacionCentroMedico.getHora()){
-                return colaConsultorio.take();
+        if (!colaConsultasPorHora.isEmpty()) {
+            if (colaConsultasPorHora.peek().getTiempoLlegada() == SimulacionCentroMedico.getHora()){
+                return colaConsultasPorHora.take();
             } else return null;
         } else {
             return null;
         }
     }
 
-    //version más segura de obtenersiguienteconsulta para que no se acumulen consultas fuera de la cola
-    public Consulta obtenerSiguienteConsultaPreventivo() throws InterruptedException {
+    //Obtiene la siguiente consulta de la cola de consultas listas
+    public Consulta obtenerSiguienteConsultaLista() throws InterruptedException {
         // 1. Verificar emergencias (máxima prioridad)
-        if (!colaConsultorio.isEmpty()) {
-            for (Consulta consulta : colaConsultorio) {
+        if (!colaConsultasListas.isEmpty()) {
+            for (Consulta consulta : colaConsultasListas) {
                 consulta.actualizarPrioridad();
             }
-            Consulta consultaPeek = colaConsultorio.peek();
-            if (consultaPeek != null && consultaPeek.getTiempoLlegada() == SimulacionCentroMedico.getHora()){
+            Consulta consultaPeek = colaConsultasListas.peek();
                 boolean recursosDisponibles = false;        //revisa si hay recursos
                 switch (consultaPeek.getTipo()) {
                     case EMERGENCIA:
@@ -72,22 +73,33 @@ public class Recepcionista {
                         break;
                 }
                 if (recursosDisponibles) {              //si hay recursos disponibles para dicha consulta la saca de la cola y la devuelve.
-                    colaConsultorio.remove(consultaPeek);
+                    colaConsultasListas.remove(consultaPeek);
                     return consultaPeek;
                 }
                 return null;            //si no hay recursos retorna null
-            } else {
-                return null;            //si la hora no coincide retorna null
-            }
         } else {
             return null;    //si la cola está vacia la cola retorna null
         }
     }
+
+    //agrega a colaConsultasListas las consultas de colaConsultasPorHora que cumplan la con la hora 
+    public void agregarConsultaCorrespondiente() throws InterruptedException{
+        boolean x = true;
+        while (x) {                                                 //va sacando consultas validas hasta que x sea falso
+            Consulta consul = obtenerSiguienteConsultaPorHora();
+            if (consul == null) {                                   //cuando el metodo para obtener la siguiente consulta devulva null significa que no hay consultas que puedan salir en ese minuto
+                x = false;
+            } else {
+                colaConsultasListas.add(consul);
+            }
+        }
+    }
     
+    //Trata de sacar consultas de colaConsultasListas y revisa si hay recursos para que se ejecuten 
     public void atenderConsultasCorrespondientes() throws InterruptedException{
         boolean x = true;
         while (x) {                                                 //va sacando consultas validas hasta que x sea falso
-            Consulta consul = obtenerSiguienteConsulta();
+            Consulta consul = obtenerSiguienteConsultaLista();
             if (consul == null) {                                   //cuando el metodo para obtener la siguiente consulta devulva null significa que no hay consultas que puedan salir en ese minuto
                 x = false;
             } else {
