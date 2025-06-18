@@ -1,15 +1,11 @@
 package com.example;
 
-import com.example.Consulta.TipoConsulta;
-
 
 public class Consulta extends Thread implements Comparable<Consulta> {
-    public enum TipoConsulta { EMERGENCIA, CONTROL, CURACION, ODONTOLOGIA, ANALISIS, CARNE }
-    
     private final TipoConsulta tipo;
     private final int horaLlegada;
     private int prioridad;
-    private final String idPaciente;
+    private final int idPaciente;
     private final int duracionConsulta;
     private boolean pendiente = true;
 
@@ -17,11 +13,11 @@ public class Consulta extends Thread implements Comparable<Consulta> {
     private boolean analisisOrina;
     private boolean informeOdontologico;
     
-    public Consulta(TipoConsulta tipo, String idPaciente, int horaLlegada,int duracionConsulta) {
+    public Consulta(TipoConsulta tipo, int idPaciente, int horaLlegada) {
         this.tipo = tipo;
         this.idPaciente = idPaciente;
         this.horaLlegada = horaLlegada;
-        this.duracionConsulta = duracionConsulta;
+        this.duracionConsulta = tipo.duracionPorDefecto();
         this.prioridad = calcularPrioridadInicial();
     }
     
@@ -61,7 +57,7 @@ public class Consulta extends Thread implements Comparable<Consulta> {
     // Getters
     public TipoConsulta getTipo() { return tipo; }
     public int getPrioridad() { return prioridad; }
-    public String getIdPaciente() { return idPaciente; }
+    public int getIdPaciente() { return idPaciente; }
     public int getTiempoLlegada() { return horaLlegada; }
     public int getDuracionConsulta() { return duracionConsulta; }
 
@@ -70,8 +66,9 @@ public class Consulta extends Thread implements Comparable<Consulta> {
         // Prioridad más alta primero
         int cmp = Integer.compare(this.horaLlegada, o.horaLlegada); // Primero comparar por tiempo de llegada
         if (cmp == 0) {
-            cmp = Integer.compare(o.prioridad, this.prioridad); // Si tiempos iguales, comparar por prioridad
+            cmp = Integer.compare(this.idPaciente, o.idPaciente); // Si tiempos iguales, comparar por prioridad
         }
+        
         return cmp;
     }
 
@@ -82,13 +79,6 @@ public class Consulta extends Thread implements Comparable<Consulta> {
     @Override
     public void run() {
         try {
-            // Esperar hasta que llegue la hora de la consulta
-            while (SimulacionCentroMedico.getHora() < horaLlegada && pendiente) {
-                synchronized (SimulacionCentroMedico.getLock()) {
-                    SimulacionCentroMedico.getLock().wait();
-                }
-            }
-
             // Intentar adquirir los recursos necesarios según el tipo de consulta
             boolean recursosObtenidos = false;
             while (!recursosObtenidos && pendiente) {
@@ -128,6 +118,7 @@ public class Consulta extends Thread implements Comparable<Consulta> {
                     break;
                 }
             }
+            SimulacionCentroMedico.ObtenerRecursos.release();
 
             // Simular la atención de la consulta
             if (recursosObtenidos && pendiente) {
@@ -135,6 +126,8 @@ public class Consulta extends Thread implements Comparable<Consulta> {
                     for (int i = 0; i < duracionConsulta; i++) {
                         synchronized (SimulacionCentroMedico.getLock()) {
                             SimulacionCentroMedico.getLock().wait();
+                            SimulacionCentroMedico.hilosListos++;
+                            SimulacionCentroMedico.getLock().notifyAll(); // Notifica al principal que terminó el minuto
                         }
                     }
                 }
@@ -171,6 +164,7 @@ public class Consulta extends Thread implements Comparable<Consulta> {
                 case CURACION:
                     SimulacionCentroMedico.consultaoriodisponibles.release();
                     SimulacionCentroMedico.enfermerosdisponibles.release();
+                    break;
                 case ANALISIS:
                     analisisSangre = true;
                     analisisOrina = true;

@@ -1,6 +1,8 @@
 package com.example;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
@@ -94,19 +96,36 @@ public class Recepcionista {
             }
         }
     }
+
+    public List<Consulta> atenderConsultasCorrespondientesYDevuelveHilos() throws InterruptedException {
+        List<Consulta> lanzadas = new ArrayList<>();
+        boolean x = true;
+        while (x) {        
+            SimulacionCentroMedico.ObtenerRecursos.acquire();
+            Consulta consul = obtenerSiguienteConsultaLista();
+            if (consul == null) {
+                x = false;
+            } else {
+                consul.start();
+                lanzadas.add(consul);
+            }
+            SimulacionCentroMedico.ObtenerRecursos.release();
+        }
+        return lanzadas;
+    }
     
     //Trata de sacar consultas de colaConsultasListas y revisa si hay recursos para que se ejecuten 
     public void atenderConsultasCorrespondientes() throws InterruptedException{
         boolean x = true;
-        while (x) {                                                 //va sacando consultas validas hasta que x sea falso
+        while (x) {        
+            SimulacionCentroMedico.ObtenerRecursos.acquire();                                         //va sacando consultas validas hasta que x sea falso
             Consulta consul = obtenerSiguienteConsultaLista();
             if (consul == null) {                                   //cuando el metodo para obtener la siguiente consulta devulva null significa que no hay consultas que puedan salir en ese minuto
                 x = false;
             } else {
-                SimulacionCentroMedico.ObtenerRecursos.acquire();       //no se si esto es util, casi seguro que no
+            
                 consul.start();     //inicia el hilo
                 
-                SimulacionCentroMedico.ObtenerRecursos.release();
             }
         }
     }
