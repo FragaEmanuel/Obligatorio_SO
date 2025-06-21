@@ -1,8 +1,48 @@
-Consultas atendidas: 7
+Consultas atendidas: 10
 Consultas perdidas: 0
-Atendidas por tipo: {CONTROL=1, CARNE=1, ANALISIS=5}
+Atendidas por tipo: {ANALISIS=5, CONTROL=3, EMERGENCIA=1, CARNE=1}
 Perdidas por tipo: {}
-Consultas atendidas: 7
+Consultas atendidas: 207
+Consultas perdidas: 10
+Atendidas por tipo: {ANALISIS=39, ODONTOLOGIA=19, EMERGENCIA=34, CONTROL=43, CARNE=30, CURACION=42}
+Perdidas por tipo: {ODONTOLOGIA=2, EMERGENCIA=3, CONTROL=2, CURACION=1, CARNE=2}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {CURACION=1, CONTROL=1, ANALISIS=3}
+Consultas atendidas: 241
+Consultas perdidas: 32
+Atendidas por tipo: {CURACION=49, EMERGENCIA=35, CARNE=36, CONTROL=51, ANALISIS=43, ODONTOLOGIA=27}
+Perdidas por tipo: {CURACION=6, EMERGENCIA=6, CONTROL=5, CARNE=8, ANALISIS=3, ODONTOLOGIA=4}
+Consultas atendidas: 268
+Consultas perdidas: 5
+Atendidas por tipo: {CARNE=42, ANALISIS=46, CURACION=54, CONTROL=55, EMERGENCIA=40, ODONTOLOGIA=31}
+Perdidas por tipo: {CARNE=2, CURACION=1, CONTROL=1, EMERGENCIA=1}
+Consultas atendidas: 258
+Consultas perdidas: 15
+Atendidas por tipo: {EMERGENCIA=36, CURACION=54, CARNE=42, ODONTOLOGIA=27, ANALISIS=46, CONTROL=53}
+Perdidas por tipo: {EMERGENCIA=5, CURACION=1, CARNE=2, ODONTOLOGIA=4, CONTROL=3}
+Consultas atendidas: 263
+Consultas perdidas: 10
+Atendidas por tipo: {CURACION=53, CARNE=39, ODONTOLOGIA=31, EMERGENCIA=40, CONTROL=54, ANALISIS=46}
+Perdidas por tipo: {CURACION=2, CARNE=5, EMERGENCIA=1, CONTROL=2}
+Consultas atendidas: 261
+Consultas perdidas: 12
+Atendidas por tipo: {CARNE=42, CONTROL=53, ANALISIS=45, EMERGENCIA=39, CURACION=53, ODONTOLOGIA=29}
+Perdidas por tipo: {CARNE=2, CONTROL=3, ANALISIS=1, CURACION=2, EMERGENCIA=2, ODONTOLOGIA=2}
+Consultas atendidas: 0
+Consultas perdidas: 4
+Atendidas por tipo: {}
+Perdidas por tipo: {CURACION=1, ANALISIS=3}
+Consultas atendidas: 2
 Consultas perdidas: 0
-Atendidas por tipo: {CONTROL=1, CARNE=1, ANALISIS=5}
+Atendidas por tipo: {ANALISIS=1, CURACION=1}
 Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 4
+Atendidas por tipo: {}
+Perdidas por tipo: {ANALISIS=3, CURACION=1}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {ANALISIS=3, CURACION=1, CONTROL=1}

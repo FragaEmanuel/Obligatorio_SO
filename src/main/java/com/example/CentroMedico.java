@@ -3,17 +3,17 @@ package com.example;
 
 
 public class CentroMedico {
-    
+
     private final int medicosDisponibles;
     private final int enfermerosDisponibles;
     private final int consultoriosdisponibles;
     private final Recepcionista Recepcionista;
-    
+
     public CentroMedico(int medicos, int enfermeros, int consultorios) {
         this.medicosDisponibles = medicos;
         this.enfermerosDisponibles = enfermeros;
         this.consultoriosdisponibles = consultorios;
-        
+
         for (int i = 0; i < consultorios; i++) {
             SimulacionCentroMedico.consultaoriodisponibles.release();
         }
