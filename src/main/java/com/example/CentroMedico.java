@@ -18,10 +18,10 @@ public class CentroMedico {
             SimulacionCentroMedico.consultaoriodisponibles.release();
         }
         for (int i = 0; i < enfermeros; i++) {
-            SimulacionCentroMedico.enfermerosdisponibles.release();
+            SimulacionCentroMedico.EnfermerosDisponibles.release();
         }
         for (int i = 0; i < medicos; i++) {
-            SimulacionCentroMedico.medicosdisponibles.release();
+            SimulacionCentroMedico.MedicosDisponibles.release();
         }
         this.Recepcionista = new Recepcionista("Recepcionista");
     }
