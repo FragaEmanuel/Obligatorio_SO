@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Recepcionista {
+
     private final String nombre;
     private final Queue<Consulta> consultasPendientes = new PriorityBlockingQueue<>();
 
@@ -15,38 +16,49 @@ public class Recepcionista {
         consultasPendientes.add(c);
     }
 
-    public void agregarConsultasDelMinuto(int minutoActual) {
-        List<Consulta> reinsertar = new ArrayList<>();
+    public List<Consulta> obtenerConsultasNoLanzadas() {
+        return new ArrayList<>(consultasPendientes);
+    }
 
-        while (!consultasPendientes.isEmpty()) {
-            Consulta c = consultasPendientes.peek();
+    public void agregarConsultasDelMinuto(int minutoActual) {
+        for (Consulta c : consultasPendientes) {
             if (c.getTiempoLlegada() <= minutoActual) {
                 c.actualizarPrioridad();
-                reinsertar.add(consultasPendientes.poll());
-            } else {
-                break;
             }
         }
-
-        consultasPendientes.addAll(reinsertar);
     }
+
 
     public List<Consulta> atenderConsultasDisponibles() {
         List<Consulta> lanzadas = new ArrayList<>();
+        Iterator<Consulta> iterator = consultasPendientes.iterator();
 
-        // Hacemos una copia para evitar modificación concurrente
-        List<Consulta> intentadas = new ArrayList<>(consultasPendientes);
+        while (iterator.hasNext()) {
+            Consulta consulta = iterator.next();
 
-        for (Consulta consulta : intentadas) {
-            if (!consulta.esValida()) {
-                consultasPendientes.remove(consulta);
+            //  Todavía no llegó su hora
+            if (consulta.getTiempoLlegada() > SimulacionCentroMedico.getHora()) {
                 continue;
             }
 
+            //  Evita lanzar la consulta si terminaría después del cambio de turno (14:00, minuto 360)
+            int horaActual = SimulacionCentroMedico.getHora();
+            int horaFin = horaActual + consulta.getDuracionConsulta();
+            if (horaActual < 360 && horaFin > 360) { // compara si hay una consulta que empiece antes del cambio de turno y termine despues de este
+                continue; // No la atiende todavía, se reintentará después del cambio de turno
+            }
+
+            //  Consulta ya inválida
+            if (!consulta.esValida()) {
+                iterator.remove(); // Ya está descartada
+                continue;
+            }
+
+            //  Intentar reservar recursos
             if (intentarReservarRecursos(consulta)) {
                 consulta.setRecursosAdquiridos(true);
                 consulta.start();
-                consultasPendientes.remove(consulta);
+                iterator.remove(); // Ya se lanzó
                 lanzadas.add(consulta);
             }
         }
@@ -57,7 +69,8 @@ public class Recepcionista {
     private boolean intentarReservarRecursos(Consulta c) {
         TipoConsulta tipo = c.getTipo();
 
-        boolean tieneMedico = false, tieneEnfermero = false, tieneConsultorio = false, tieneSalaEmergencia = false;
+        boolean tieneMedico = false, tieneOdontologo = false, tieneEnfermeroFijo = false;
+        boolean tieneEnfermeroRotativo = false, tieneConsultorio = false, tieneSalaEmergencia = false;
 
         try {
             if (!SimulacionCentroMedico.ObtenerRecursos.tryAcquire()) return false;
@@ -68,29 +81,58 @@ public class Recepcionista {
                         tieneSalaEmergencia = true;
                         if (SimulacionCentroMedico.MedicosDisponibles.tryAcquire()) {
                             tieneMedico = true;
-                            if (SimulacionCentroMedico.EnfermerosDisponibles.tryAcquire()) {
-                                tieneEnfermero = true;
+                            if (SimulacionCentroMedico.EnfermerosRotativos.tryAcquire()) {
+                                tieneEnfermeroRotativo = true;
                                 return true;
                             }
                         }
                     }
                 }
+
                 case CURACION, ANALISIS -> {
                     if (SimulacionCentroMedico.consultaoriodisponibles.tryAcquire()) {
                         tieneConsultorio = true;
-                        if (SimulacionCentroMedico.EnfermerosDisponibles.tryAcquire()) {
-                            tieneEnfermero = true;
-                            return true;
+
+                        if (SimulacionCentroMedico.cantidadEnfermerosFijos > 0) {
+                            if (SimulacionCentroMedico.EnfermerosFijos.tryAcquire()) {
+                                tieneEnfermeroFijo = true;
+                                c.setTieneEnfermeroFijo(true);
+                                return true;
+                            } else {
+                                SimulacionCentroMedico.consultaoriodisponibles.release();
+                            }
+                        } else {
+                            if (SimulacionCentroMedico.EnfermerosRotativos.tryAcquire()) {
+                                tieneEnfermeroRotativo = true;
+                                c.setTieneEnfermeroRotativo(true);
+                                return true;
+                            } else {
+                                SimulacionCentroMedico.consultaoriodisponibles.release();
+                            }
                         }
                     }
                 }
-                case CONTROL, CARNE, ODONTOLOGIA -> {
+
+                case CONTROL, CARNE -> {
                     if (SimulacionCentroMedico.consultaoriodisponibles.tryAcquire()) {
                         tieneConsultorio = true;
                         if (SimulacionCentroMedico.MedicosDisponibles.tryAcquire()) {
                             tieneMedico = true;
-                            if (SimulacionCentroMedico.EnfermerosDisponibles.tryAcquire()) {
-                                tieneEnfermero = true;
+                            if (SimulacionCentroMedico.EnfermerosRotativos.tryAcquire()) {
+                                tieneEnfermeroRotativo = true;
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                case ODONTOLOGIA -> {
+                    if (SimulacionCentroMedico.consultaoriodisponibles.tryAcquire()) {
+                        tieneConsultorio = true;
+                        if (SimulacionCentroMedico.OdontologosDisponibles.tryAcquire()) {
+                            tieneOdontologo = true;
+                            if (SimulacionCentroMedico.EnfermerosRotativos.tryAcquire()) {
+                                tieneEnfermeroRotativo = true;
                                 return true;
                             }
                         }
@@ -98,11 +140,13 @@ public class Recepcionista {
                 }
             }
 
-            // Si no se pudo completar, liberar los recursos adquiridos parciales
+            // Si fallo, liberamos
             if (tieneSalaEmergencia) SimulacionCentroMedico.haysalaEmergencia.release();
             if (tieneConsultorio) SimulacionCentroMedico.consultaoriodisponibles.release();
             if (tieneMedico) SimulacionCentroMedico.MedicosDisponibles.release();
-            if (tieneEnfermero) SimulacionCentroMedico.EnfermerosDisponibles.release();
+            if (tieneOdontologo) SimulacionCentroMedico.OdontologosDisponibles.release();
+            if (tieneEnfermeroFijo) SimulacionCentroMedico.EnfermerosFijos.release();
+            if (tieneEnfermeroRotativo) SimulacionCentroMedico.EnfermerosRotativos.release();
 
         } finally {
             SimulacionCentroMedico.ObtenerRecursos.release();

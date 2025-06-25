@@ -1,32 +1,51 @@
 package com.example;
 
-
-
 public class CentroMedico {
 
+    // Cantidades iniciales de recursos
     private final int medicosDisponibles;
-    private final int enfermerosDisponibles;
-    private final int consultoriosdisponibles;
-    private final Recepcionista Recepcionista;
+    private final int odontologosDisponibles;
+    private final int enfermerosFijos;
+    private final int enfermerosRotativos;
+    private final int consultoriosDisponibles;
 
-    public CentroMedico(int medicos, int enfermeros, int consultorios) {
+    // Único recepcionista del sistema
+    private final Recepcionista recepcionista;
+
+    public CentroMedico(int medicos, int odontologos, int fijos, int rotativos, int consultorios) {
         this.medicosDisponibles = medicos;
-        this.enfermerosDisponibles = enfermeros;
-        this.consultoriosdisponibles = consultorios;
+        this.odontologosDisponibles = odontologos;
+        this.enfermerosFijos = fijos;
+        this.enfermerosRotativos = rotativos;
+        this.consultoriosDisponibles = consultorios;
 
+        // Inicializa semáforos de consultorios
         for (int i = 0; i < consultorios; i++) {
             SimulacionCentroMedico.consultaoriodisponibles.release();
         }
-        for (int i = 0; i < enfermeros; i++) {
-            SimulacionCentroMedico.EnfermerosDisponibles.release();
-        }
+
+        // Inicializa semáforos de personal de salud
         for (int i = 0; i < medicos; i++) {
             SimulacionCentroMedico.MedicosDisponibles.release();
         }
-        this.Recepcionista = new Recepcionista("Recepcionista");
+
+        for (int i = 0; i < odontologos; i++) {
+            SimulacionCentroMedico.OdontologosDisponibles.release();
+        }
+
+        for (int i = 0; i < fijos; i++) {
+            SimulacionCentroMedico.EnfermerosFijos.release();
+        }
+
+        for (int i = 0; i < rotativos; i++) {
+            SimulacionCentroMedico.EnfermerosRotativos.release();
+        }
+
+        // Crear recepcionista único
+        this.recepcionista = new Recepcionista("Recepcionista");
     }
 
     public Recepcionista getRecepcionista() {
-        return Recepcionista;
+        return recepcionista;
     }
 }

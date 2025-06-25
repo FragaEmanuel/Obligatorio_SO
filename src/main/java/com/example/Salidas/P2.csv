@@ -359,3 +359,12 @@ Atendidas por tipo: {ANALISIS=24, CARNE=13, EMERGENCIA=22, CURACION=26, CONTROL=
 Perdidas por tipo: {ANALISIS=4, CARNE=3, EMERGENCIA=1, CURACION=2, CONTROL=4}
 Consultas turno mañana (8-14): 40
 Consultas turno tarde (14-20): 68
+
+
+Consultas atendidas: 111
+Consultas atendidas: 109
+Consultas perdidas: 6
+Atendidas por tipo: {CURACION=23, CARNE=18, ANALISIS=18, EMERGENCIA=23, CONTROL=27}
+Perdidas por tipo: {CURACION=1, ANALISIS=3, EMERGENCIA=1, CONTROL=1}
+Consultas turno mañana (8-14): 39
+Consultas turno tarde (14-20): 70

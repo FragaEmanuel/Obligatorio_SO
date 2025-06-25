@@ -1,6 +1,7 @@
 package com.example;
 
 public class Consulta extends Thread implements Comparable<Consulta> {
+
     private final TipoConsulta tipo;
     private final int horaLlegada;
     private int prioridad;
@@ -8,6 +9,9 @@ public class Consulta extends Thread implements Comparable<Consulta> {
     private final int duracionConsulta;
     private boolean pendiente = true;
     private boolean recursosAdquiridos = false;
+    private boolean tieneEnfermeroFijo = false;
+    private boolean tieneEnfermeroRotativo = false;
+
 
     public Consulta(TipoConsulta tipo, int idPaciente, int horaLlegada) {
         this.tipo = tipo;
@@ -17,6 +21,7 @@ public class Consulta extends Thread implements Comparable<Consulta> {
         this.prioridad = calcularPrioridadInicial();
     }
 
+    // Asigna una prioridad base
     private int calcularPrioridadInicial() {
         return switch (tipo) {
             case EMERGENCIA -> 80;
@@ -24,11 +29,21 @@ public class Consulta extends Thread implements Comparable<Consulta> {
             default -> 50;
         };
     }
+    public void setTieneEnfermeroFijo(boolean valor) {
+        this.tieneEnfermeroFijo = valor;
+    }
 
+    public void setTieneEnfermeroRotativo(boolean valor) {
+        this.tieneEnfermeroRotativo = valor;
+    }
+
+    // Incrementa prioridad en función del tiempo de espera
     public void actualizarPrioridad() {
         int tiempoEspera = SimulacionCentroMedico.getHora() - horaLlegada;
+
         if (tiempoEspera > 120 && tipo == TipoConsulta.EMERGENCIA) {
-            pendiente = false;
+            pendiente = false; // Se descarta por esperar demasiado
+            // Murio
         }
 
         if (tipo == TipoConsulta.EMERGENCIA) {
@@ -62,9 +77,14 @@ public class Consulta extends Thread implements Comparable<Consulta> {
         this.recursosAdquiridos = adquiridos;
     }
 
+    public int getDuracionConsulta() {
+        return duracionConsulta;
+    }
+
+
     @Override
     public int compareTo(Consulta o) {
-        return Integer.compare(o.getPrioridad(), this.getPrioridad()); // orden descendente
+        return Integer.compare(o.getPrioridad(), this.getPrioridad()); // Prioridad descendente
     }
 
     @Override
@@ -92,7 +112,6 @@ public class Consulta extends Thread implements Comparable<Consulta> {
                     SimulacionCentroMedico.hilosListos++;
                     SimulacionCentroMedico.getLock().notifyAll();
 
-                    // Esperar hasta que el reloj avance un minuto
                     while (SimulacionCentroMedico.getHora() == horaPrev) {
                         SimulacionCentroMedico.getLock().wait();
                     }
@@ -108,35 +127,46 @@ public class Consulta extends Thread implements Comparable<Consulta> {
             Thread.currentThread().interrupt();
             marcarPerdida("interrumpido por error");
         } finally {
-            if (recursosAdquiridos) liberarRecursos();
+            if (recursosAdquiridos) {
+                liberarRecursos();
+            }
         }
     }
 
-
+    // Libera los recursos según el tipo de consulta
     private void liberarRecursos() {
         switch (tipo) {
             case EMERGENCIA -> {
                 SimulacionCentroMedico.haysalaEmergencia.release();
                 SimulacionCentroMedico.MedicosDisponibles.release();
-                SimulacionCentroMedico.EnfermerosDisponibles.release();
+                SimulacionCentroMedico.EnfermerosRotativos.release();
             }
+
+            case CURACION, ANALISIS -> {
+                SimulacionCentroMedico.consultaoriodisponibles.release();
+                if (tieneEnfermeroFijo) {
+                    SimulacionCentroMedico.EnfermerosFijos.release();
+                } else if (tieneEnfermeroRotativo) {
+                    SimulacionCentroMedico.EnfermerosRotativos.release();
+                }
+            }
+
+
             case CONTROL, CARNE -> {
                 SimulacionCentroMedico.consultaoriodisponibles.release();
                 SimulacionCentroMedico.MedicosDisponibles.release();
-                SimulacionCentroMedico.EnfermerosDisponibles.release();
+                SimulacionCentroMedico.EnfermerosRotativos.release();
             }
-            case CURACION, ANALISIS -> {
-                SimulacionCentroMedico.consultaoriodisponibles.release();
-                SimulacionCentroMedico.EnfermerosDisponibles.release();
-            }
+
             case ODONTOLOGIA -> {
                 SimulacionCentroMedico.consultaoriodisponibles.release();
-                SimulacionCentroMedico.MedicosDisponibles.release();
-                SimulacionCentroMedico.EnfermerosDisponibles.release();
+                SimulacionCentroMedico.OdontologosDisponibles.release();
+                SimulacionCentroMedico.EnfermerosRotativos.release();
             }
         }
     }
 
+    // Marca como atendida en las estadísticas
     private void registrarAtendida() {
         synchronized (SimulacionCentroMedico.class) {
             SimulacionCentroMedico.consultasAtendidas++;
@@ -149,7 +179,8 @@ public class Consulta extends Thread implements Comparable<Consulta> {
         }
     }
 
-    private void marcarPerdida(String motivo) {
+    // Marca la consulta como no atendida
+    public void marcarPerdida(String motivo) {
         System.out.println("/ Paciente " + idPaciente + " NO atendido (" + tipo + "): " + motivo + ".");
         pendiente = false;
         synchronized (SimulacionCentroMedico.class) {
