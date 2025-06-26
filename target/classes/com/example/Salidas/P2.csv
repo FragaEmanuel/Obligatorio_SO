@@ -1,0 +1,370 @@
+Consultas atendidas: 10
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=5, CONTROL=3, EMERGENCIA=1, CARNE=1}
+Perdidas por tipo: {}
+Consultas atendidas: 207
+Consultas perdidas: 10
+Atendidas por tipo: {ANALISIS=39, ODONTOLOGIA=19, EMERGENCIA=34, CONTROL=43, CARNE=30, CURACION=42}
+Perdidas por tipo: {ODONTOLOGIA=2, EMERGENCIA=3, CONTROL=2, CURACION=1, CARNE=2}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {CURACION=1, CONTROL=1, ANALISIS=3}
+Consultas atendidas: 241
+Consultas perdidas: 32
+Atendidas por tipo: {CURACION=49, EMERGENCIA=35, CARNE=36, CONTROL=51, ANALISIS=43, ODONTOLOGIA=27}
+Perdidas por tipo: {CURACION=6, EMERGENCIA=6, CONTROL=5, CARNE=8, ANALISIS=3, ODONTOLOGIA=4}
+Consultas atendidas: 268
+Consultas perdidas: 5
+Atendidas por tipo: {CARNE=42, ANALISIS=46, CURACION=54, CONTROL=55, EMERGENCIA=40, ODONTOLOGIA=31}
+Perdidas por tipo: {CARNE=2, CURACION=1, CONTROL=1, EMERGENCIA=1}
+Consultas atendidas: 258
+Consultas perdidas: 15
+Atendidas por tipo: {EMERGENCIA=36, CURACION=54, CARNE=42, ODONTOLOGIA=27, ANALISIS=46, CONTROL=53}
+Perdidas por tipo: {EMERGENCIA=5, CURACION=1, CARNE=2, ODONTOLOGIA=4, CONTROL=3}
+Consultas atendidas: 263
+Consultas perdidas: 10
+Atendidas por tipo: {CURACION=53, CARNE=39, ODONTOLOGIA=31, EMERGENCIA=40, CONTROL=54, ANALISIS=46}
+Perdidas por tipo: {CURACION=2, CARNE=5, EMERGENCIA=1, CONTROL=2}
+Consultas atendidas: 261
+Consultas perdidas: 12
+Atendidas por tipo: {CARNE=42, CONTROL=53, ANALISIS=45, EMERGENCIA=39, CURACION=53, ODONTOLOGIA=29}
+Perdidas por tipo: {CARNE=2, CONTROL=3, ANALISIS=1, CURACION=2, EMERGENCIA=2, ODONTOLOGIA=2}
+Consultas atendidas: 0
+Consultas perdidas: 4
+Atendidas por tipo: {}
+Perdidas por tipo: {CURACION=1, ANALISIS=3}
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=1, CURACION=1}
+Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 4
+Atendidas por tipo: {}
+Perdidas por tipo: {ANALISIS=3, CURACION=1}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {ANALISIS=3, CURACION=1, CONTROL=1}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {CONTROL=1, ANALISIS=3, CURACION=1}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {ANALISIS=3, CURACION=1, CONTROL=1}
+Consultas atendidas: 0
+Consultas perdidas: 0
+Atendidas por tipo: {}
+Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 0
+Atendidas por tipo: {}
+Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 0
+Atendidas por tipo: {}
+Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 0
+Atendidas por tipo: {}
+Perdidas por tipo: {}
+Consultas atendidas: 45
+Consultas perdidas: 3
+Atendidas por tipo: {EMERGENCIA=7, CONTROL=11, CURACION=6, ODONTOLOGIA=1, ANALISIS=14, CARNE=6}
+Perdidas por tipo: {CURACION=1, ANALISIS=2}
+Consultas atendidas: 45
+Consultas perdidas: 3
+Atendidas por tipo: {ODONTOLOGIA=1, CONTROL=11, CURACION=6, EMERGENCIA=7, CARNE=6, ANALISIS=14}
+Perdidas por tipo: {CURACION=1, ANALISIS=2}
+Consultas atendidas: 45
+Consultas perdidas: 3
+Atendidas por tipo: {CURACION=6, CONTROL=11, ANALISIS=14, ODONTOLOGIA=1, CARNE=6, EMERGENCIA=7}
+Perdidas por tipo: {CURACION=1, ANALISIS=2}
+Consultas atendidas: 6
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=4, CURACION=1, CONTROL=1}
+Perdidas por tipo: {}
+Consultas atendidas: 6
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=4, CURACION=1, CONTROL=1}
+Perdidas por tipo: {}
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2}
+Perdidas por tipo: {}
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2}
+Perdidas por tipo: {}
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2}
+Perdidas por tipo: {}
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2}
+Perdidas por tipo: {}
+Consultas atendidas: 0
+Consultas perdidas: 5
+Atendidas por tipo: {}
+Perdidas por tipo: {CURACION=1, CONTROL=1, ANALISIS=3}
+Consultas turno mañana (8-14): 0
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 24
+Consultas perdidas: 13
+Atendidas por tipo: {CURACION=1, EMERGENCIA=22, ANALISIS=1}
+Perdidas por tipo: {CURACION=3, CONTROL=2, ANALISIS=2, EMERGENCIA=6}
+Consultas turno mañana (8-14): 12
+Consultas turno tarde (14-20): 12
+Consultas atendidas: 10
+Consultas perdidas: 0
+Atendidas por tipo: {CONTROL=3, CARNE=1, EMERGENCIA=1, ANALISIS=5}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 2
+Consultas turno tarde (14-20): 8
+Consultas atendidas: 10
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=1, CARNE=1, ANALISIS=5, CONTROL=3}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 2
+Consultas turno tarde (14-20): 8
+Consultas atendidas: 24
+Consultas perdidas: 13
+Atendidas por tipo: {CURACION=1, EMERGENCIA=22, ANALISIS=1}
+Perdidas por tipo: {CURACION=3, EMERGENCIA=6, ANALISIS=2, CONTROL=2}
+Consultas turno mañana (8-14): 12
+Consultas turno tarde (14-20): 12
+Consultas atendidas: 24
+Consultas perdidas: 13
+Atendidas por tipo: {CURACION=1, EMERGENCIA=22, ANALISIS=1}
+Perdidas por tipo: {CURACION=3, CONTROL=2, ANALISIS=2, EMERGENCIA=6}
+Consultas turno mañana (8-14): 12
+Consultas turno tarde (14-20): 12
+Consultas atendidas: 264
+Consultas perdidas: 8
+Atendidas por tipo: {CONTROL=55, EMERGENCIA=36, ANALISIS=46, CARNE=42, ODONTOLOGIA=31, CURACION=54}
+Perdidas por tipo: {CONTROL=1, EMERGENCIA=4, CARNE=2, CURACION=1}
+Consultas turno mañana (8-14): 128
+Consultas turno tarde (14-20): 136
+Consultas atendidas: 168
+Consultas perdidas: 11
+Atendidas por tipo: {CONTROL=39, CURACION=34, CARNE=22, ODONTOLOGIA=17, EMERGENCIA=29, ANALISIS=27}
+Perdidas por tipo: {CONTROL=1, CURACION=3, CARNE=1, ODONTOLOGIA=1, ANALISIS=2, EMERGENCIA=3}
+Consultas turno mañana (8-14): 73
+Consultas turno tarde (14-20): 95
+Consultas atendidas: 171
+Consultas perdidas: 16
+Atendidas por tipo: {CURACION=40, ANALISIS=37, ODONTOLOGIA=15, EMERGENCIA=21, CONTROL=36, CARNE=22}
+Perdidas por tipo: {CURACION=3, ANALISIS=4, ODONTOLOGIA=2, EMERGENCIA=4, CONTROL=1, CARNE=2}
+Consultas turno mañana (8-14): 66
+Consultas turno tarde (14-20): 105
+Consultas atendidas: 142
+Consultas perdidas: 13
+Atendidas por tipo: {ANALISIS=31, ODONTOLOGIA=11, CONTROL=27, CURACION=30, CARNE=17, EMERGENCIA=26}
+Perdidas por tipo: {ANALISIS=1, ODONTOLOGIA=1, CONTROL=1, CURACION=2, CARNE=3, EMERGENCIA=5}
+Consultas turno mañana (8-14): 66
+Consultas turno tarde (14-20): 76
+Consultas atendidas: 163
+Consultas perdidas: 17
+Atendidas por tipo: {ODONTOLOGIA=16, CARNE=23, EMERGENCIA=31, CONTROL=25, CURACION=33, ANALISIS=35}
+Perdidas por tipo: {ODONTOLOGIA=1, CARNE=2, EMERGENCIA=5, CONTROL=7, ANALISIS=2}
+Consultas turno mañana (8-14): 72
+Consultas turno tarde (14-20): 91
+Consultas atendidas: 130
+Consultas perdidas: 10
+Atendidas por tipo: {ODONTOLOGIA=12, ANALISIS=29, EMERGENCIA=20, CURACION=21, CONTROL=28, CARNE=20}
+Perdidas por tipo: {ODONTOLOGIA=3, ANALISIS=1, EMERGENCIA=3, CONTROL=1, CARNE=2}
+Consultas turno mañana (8-14): 67
+Consultas turno tarde (14-20): 63
+Consultas atendidas: 263
+Consultas perdidas: 8
+Atendidas por tipo: {ODONTOLOGIA=31, CONTROL=55, CARNE=42, ANALISIS=46, EMERGENCIA=35, CURACION=54}
+Perdidas por tipo: {CONTROL=1, CARNE=2, EMERGENCIA=4, CURACION=1}
+Consultas turno mañana (8-14): 129
+Consultas turno tarde (14-20): 134
+Consultas atendidas: 263
+Consultas perdidas: 9
+Atendidas por tipo: {CURACION=54, CONTROL=54, EMERGENCIA=36, ODONTOLOGIA=31, ANALISIS=46, CARNE=42}
+Perdidas por tipo: {CURACION=1, CONTROL=2, EMERGENCIA=4, CARNE=2}
+Consultas turno mañana (8-14): 127
+Consultas turno tarde (14-20): 136
+Consultas atendidas: 264
+Consultas perdidas: 8
+Atendidas por tipo: {ANALISIS=46, CARNE=42, CONTROL=55, EMERGENCIA=36, CURACION=54, ODONTOLOGIA=31}
+Perdidas por tipo: {CARNE=2, CONTROL=1, EMERGENCIA=4, CURACION=1}
+Consultas turno mañana (8-14): 129
+Consultas turno tarde (14-20): 135
+Consultas atendidas: 8
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=4, CONTROL=1, EMERGENCIA=2, CURACION=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 8
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 3
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=1, EMERGENCIA=1, CURACION=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 3
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 9
+Consultas perdidas: 0
+Atendidas por tipo: {CARNE=1, EMERGENCIA=2, CONTROL=1, ANALISIS=4, CURACION=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 9
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 3
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=1, CURACION=1, ANALISIS=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 3
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 8
+Consultas perdidas: 0
+Atendidas por tipo: {ANALISIS=4, CONTROL=1, EMERGENCIA=2, CURACION=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 8
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 23
+Consultas perdidas: 0
+Atendidas por tipo: {CURACION=2, ANALISIS=9, CONTROL=4, EMERGENCIA=4, CARNE=4}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 23
+Consultas turno tarde (14-20): 0
+Consultas atendidas: 2
+Consultas perdidas: 0
+Atendidas por tipo: {CARNE=1, ANALISIS=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 0
+Consultas turno tarde (14-20): 2
+Consultas atendidas: 268
+Consultas perdidas: 5
+Atendidas por tipo: {EMERGENCIA=40, CONTROL=55, CARNE=42, ANALISIS=46, CURACION=54, ODONTOLOGIA=31}
+Perdidas por tipo: {EMERGENCIA=1, CONTROL=1, CARNE=2, CURACION=1}
+Consultas turno mañana (8-14): 134
+Consultas turno tarde (14-20): 134
+Consultas atendidas: 268
+Consultas perdidas: 5
+Atendidas por tipo: {CURACION=54, ANALISIS=46, CONTROL=55, EMERGENCIA=40, CARNE=42, ODONTOLOGIA=31}
+Perdidas por tipo: {CURACION=1, CONTROL=1, EMERGENCIA=1, CARNE=2}
+Consultas turno mañana (8-14): 134
+Consultas turno tarde (14-20): 134
+Consultas atendidas: 268
+Consultas perdidas: 5
+Atendidas por tipo: {CURACION=54, ODONTOLOGIA=31, EMERGENCIA=40, CARNE=42, CONTROL=55, ANALISIS=46}
+Perdidas por tipo: {CURACION=1, EMERGENCIA=1, CARNE=2, CONTROL=1}
+Consultas turno mañana (8-14): 136
+Consultas turno tarde (14-20): 132
+Consultas atendidas: 263
+Consultas perdidas: 0
+Atendidas por tipo: {ODONTOLOGIA=31, ANALISIS=46, EMERGENCIA=31, CONTROL=56, CARNE=44, CURACION=55}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 152
+Consultas turno tarde (14-20): 111
+Consultas atendidas: 265
+Consultas perdidas: 0
+Atendidas por tipo: {CURACION=55, CONTROL=56, ANALISIS=46, EMERGENCIA=33, CARNE=44, ODONTOLOGIA=31}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 148
+Consultas turno tarde (14-20): 117
+Consultas atendidas: 152
+Consultas perdidas: 9
+Atendidas por tipo: {EMERGENCIA=29, ODONTOLOGIA=1, ANALISIS=33, CURACION=32, CONTROL=34, CARNE=23}
+Perdidas por tipo: {ANALISIS=2, ODONTOLOGIA=1, CURACION=2, CONTROL=2, CARNE=2}
+Consultas turno mañana (8-14): 56
+Consultas turno tarde (14-20): 96
+Consultas atendidas: 144
+Consultas perdidas: 15
+Atendidas por tipo: {CURACION=31, EMERGENCIA=27, CONTROL=34, CARNE=25, ANALISIS=27}
+Perdidas por tipo: {CURACION=3, CONTROL=6, CARNE=1, ANALISIS=5}
+Consultas turno mañana (8-14): 57
+Consultas turno tarde (14-20): 87
+Consultas atendidas: 59
+Consultas perdidas: 4
+Atendidas por tipo: {ANALISIS=6, CURACION=10, CONTROL=9, CARNE=9, EMERGENCIA=25}
+Perdidas por tipo: {ANALISIS=1, CURACION=1, CARNE=2}
+Consultas turno mañana (8-14): 11
+Consultas turno tarde (14-20): 48
+Consultas atendidas: 61
+Consultas perdidas: 1
+Atendidas por tipo: {ANALISIS=9, ODONTOLOGIA=1, CURACION=11, EMERGENCIA=26, CARNE=8, CONTROL=6}
+Perdidas por tipo: {CURACION=1}
+Consultas turno mañana (8-14): 11
+Consultas turno tarde (14-20): 50
+Consultas atendidas: 142
+Consultas perdidas: 9
+Atendidas por tipo: {ODONTOLOGIA=1, CONTROL=35, ANALISIS=24, CARNE=24, CURACION=29, EMERGENCIA=29}
+Perdidas por tipo: {ODONTOLOGIA=5, CARNE=1, CURACION=3}
+Consultas turno mañana (8-14): 58
+Consultas turno tarde (14-20): 84
+Consultas atendidas: 141
+Consultas perdidas: 6
+Atendidas por tipo: {ANALISIS=28, ODONTOLOGIA=4, CURACION=27, CARNE=21, EMERGENCIA=28, CONTROL=33}
+Perdidas por tipo: {CURACION=2, CARNE=1, CONTROL=3}
+Consultas turno mañana (8-14): 57
+Consultas turno tarde (14-20): 84
+Consultas atendidas: 110
+Consultas perdidas: 10
+Atendidas por tipo: {ODONTOLOGIA=1, CONTROL=28, CARNE=19, CURACION=23, ANALISIS=17, EMERGENCIA=22}
+Perdidas por tipo: {CONTROL=1, CARNE=3, CURACION=3, ANALISIS=2, EMERGENCIA=1}
+Consultas turno mañana (8-14): 41
+Consultas turno tarde (14-20): 69
+Consultas atendidas: 52
+Consultas perdidas: 3
+Atendidas por tipo: {ANALISIS=6, EMERGENCIA=23, CONTROL=9, CURACION=5, CARNE=9}
+Perdidas por tipo: {ANALISIS=1, CONTROL=1, CARNE=1}
+Consultas turno mañana (8-14): 11
+Consultas turno tarde (14-20): 41
+Consultas atendidas: 166
+Consultas perdidas: 12
+Atendidas por tipo: {EMERGENCIA=22, CONTROL=41, CURACION=36, ODONTOLOGIA=1, ANALISIS=33, CARNE=33}
+Perdidas por tipo: {CONTROL=1, CURACION=5, ANALISIS=3, CARNE=3}
+Consultas turno mañana (8-14): 68
+Consultas turno tarde (14-20): 98
+Consultas atendidas: 111
+Consultas perdidas: 6
+Atendidas por tipo: {EMERGENCIA=23, CONTROL=16, CARNE=7, CURACION=36, ANALISIS=29}
+Perdidas por tipo: {CONTROL=3, ANALISIS=3}
+Consultas turno mañana (8-14): 42
+Consultas turno tarde (14-20): 69
+Consultas atendidas: 53
+Consultas perdidas: 6
+Atendidas por tipo: {EMERGENCIA=23, CONTROL=6, ANALISIS=6, CARNE=8, CURACION=10}
+Perdidas por tipo: {CONTROL=1, ANALISIS=4, CARNE=1}
+Consultas turno mañana (8-14): 11
+Consultas turno tarde (14-20): 42
+Consultas atendidas: 108
+Consultas perdidas: 2
+Atendidas por tipo: {CURACION=24, EMERGENCIA=23, CONTROL=28, CARNE=14, ANALISIS=19}
+Perdidas por tipo: {ANALISIS=2}
+Consultas turno mañana (8-14): 39
+Consultas turno tarde (14-20): 69
+Consultas atendidas: 108
+Consultas perdidas: 6
+Atendidas por tipo: {ODONTOLOGIA=1, ANALISIS=17, EMERGENCIA=23, CURACION=25, CONTROL=26, CARNE=16}
+Perdidas por tipo: {ODONTOLOGIA=1, CONTROL=1, CURACION=2, CARNE=2}
+Consultas turno mañana (8-14): 39
+Consultas turno tarde (14-20): 69
+Consultas atendidas: 112
+Consultas perdidas: 10
+Atendidas por tipo: {CONTROL=23, CARNE=19, EMERGENCIA=22, ANALISIS=23, CURACION=25}
+Perdidas por tipo: {CONTROL=2, EMERGENCIA=1, ANALISIS=4, CURACION=3}
+Consultas turno mañana (8-14): 44
+Consultas turno tarde (14-20): 68
+
+Consultas atendidas: 108
+Consultas perdidas: 14
+Atendidas por tipo: {ANALISIS=24, CARNE=13, EMERGENCIA=22, CURACION=26, CONTROL=23}
+Perdidas por tipo: {ANALISIS=4, CARNE=3, EMERGENCIA=1, CURACION=2, CONTROL=4}
+Consultas turno mañana (8-14): 40
+Consultas turno tarde (14-20): 68
+
+
+Consultas atendidas: 111
+Consultas atendidas: 109
+Consultas perdidas: 6
+Atendidas por tipo: {CURACION=23, CARNE=18, ANALISIS=18, EMERGENCIA=23, CONTROL=27}
+Perdidas por tipo: {CURACION=1, ANALISIS=3, EMERGENCIA=1, CONTROL=1}
+Consultas turno mañana (8-14): 39
+Consultas turno tarde (14-20): 70

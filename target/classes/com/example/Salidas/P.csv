@@ -1,0 +1,28 @@
+Consultas atendidas: 3
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2, CONTROL=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 0
+Consultas turno tarde (14-20): 3
+----------------------------------------------------------------------------------------------
+Consultas atendidas: 3
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2, CONTROL=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 0
+Consultas turno tarde (14-20): 3
+----------------------------------------------------------------------------------------------
+Consultas atendidas: 3
+Consultas perdidas: 0
+Atendidas por tipo: {EMERGENCIA=2, CONTROL=1}
+Perdidas por tipo: {}
+Consultas turno mañana (8-14): 3
+Consultas turno tarde (14-20): 0
+----------------------------------------------------------------------------------------------
+Consultas atendidas: 101
+Consultas perdidas: 172
+Atendidas por tipo: {ANALISIS=20, CARNE=13, ODONTOLOGIA=11, CONTROL=11, EMERGENCIA=16, CURACION=30}
+Perdidas por tipo: {ANALISIS=26, ODONTOLOGIA=20, CARNE=31, EMERGENCIA=25, CONTROL=45, CURACION=25}
+Consultas turno mañana (8-14): 44
+Consultas turno tarde (14-20): 57
+----------------------------------------------------------------------------------------------

@@ -42,8 +42,8 @@ public class Consulta extends Thread implements Comparable<Consulta> {
         int tiempoEspera = SimulacionCentroMedico.getHora() - horaLlegada;
 
         if (tiempoEspera > 120 && tipo == TipoConsulta.EMERGENCIA) {
-            pendiente = false; // Se descarta por esperar demasiado
-            // Murio
+            marcarPerdida("Se excedió tiempo de espera de la Emergencia"); // Se descarta por esperar demasiado
+            return;
         }
 
         if (tipo == TipoConsulta.EMERGENCIA) {

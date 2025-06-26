@@ -1,6 +1,9 @@
 package com.example;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Recepcionista {
@@ -20,9 +23,11 @@ public class Recepcionista {
         return new ArrayList<>(consultasPendientes);
     }
 
-    public void agregarConsultasDelMinuto(int minutoActual) {
+    //Actualiza la prioridad de las consultas activas en base al minuto actual
+    //Las consultas que aún no han llegado (tiempoLlegada < minutoActual) no se actualizan.
+    public void actualizarPrioridadConsultasActivas(int minutoActual) {
         for (Consulta c : consultasPendientes) {
-            if (c.getTiempoLlegada() <= minutoActual) {
+            if (c.getTiempoLlegada() >= minutoActual) {
                 c.actualizarPrioridad();
             }
         }
@@ -36,8 +41,8 @@ public class Recepcionista {
         while (iterator.hasNext()) {
             Consulta consulta = iterator.next();
 
-            //  Todavía no llegó su hora
-            if (consulta.getTiempoLlegada() > SimulacionCentroMedico.getHora()) {
+            //  Evita lanzar la consulta si aún no ha llegado (tiempoLlegada > horaSimulada)
+            if (consulta.getTiempoLlegada() <= SimulacionCentroMedico.getHora()) {
                 continue;
             }
 

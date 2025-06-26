@@ -1,6 +1,10 @@
 package com.example;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public class SimulacionCentroMedico {
@@ -99,7 +103,7 @@ public class SimulacionCentroMedico {
             }
 
             // Cargar y lanzar consultas del minuto actual
-            recepcionista.agregarConsultasDelMinuto(minuto);
+            recepcionista.actualizarPrioridadConsultasActivas(minuto);
             List<Consulta> lanzadas = recepcionista.atenderConsultasDisponibles();
             hilosActivos.addAll(lanzadas);
             System.out.println("* Hilos activos lanzados este minuto: " + lanzadas.size());
@@ -161,7 +165,7 @@ public class SimulacionCentroMedico {
                 "----------------------------------------------------------------------------------------------"
         };
 
-        String archivoSalida = "src/main/java/com/example/Salidas/ResultadosFinal.csv";
+        String archivoSalida = "src/main/java/com/example/Salidas/P.csv";
         ManejadorArchivosGenerico.escribirArchivo(archivoSalida, salida);
 
         System.out.println("/// Simulación finalizada. Archivo generado: " + archivoSalida);
