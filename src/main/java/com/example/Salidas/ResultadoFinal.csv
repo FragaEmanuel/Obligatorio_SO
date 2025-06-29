@@ -1,0 +1,7 @@
+Consultas atendidas: 86
+Consultas perdidas: 333
+Atendidas por tipo: {ODONTOLOGIA=3, EMERGENCIA=16, CONTROL=7, ANALISIS=27, CURACION=27, CARNE=6}
+Perdidas por tipo: {ODONTOLOGIA=41, EMERGENCIA=48, CURACION=56, ANALISIS=46, CONTROL=82, CARNE=60}
+Consultas turno mañana (8-14): 46
+Consultas turno tarde (14-20): 40
+----------------------------------------------------------------------------------------------

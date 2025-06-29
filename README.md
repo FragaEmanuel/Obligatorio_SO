@@ -1,7 +1,7 @@
 # Obligatorio_SO
 Notas del Fix
 
-Recepcionista.java
+AdministradorDeConsultas.java
 
     -Cambie el nombre de agregarConsultasDelMinuto() a actualizarPrioridadConsultasActivas() ya que solo actualiza.
     
