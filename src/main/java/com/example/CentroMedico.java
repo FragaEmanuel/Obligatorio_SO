@@ -9,8 +9,8 @@ public class CentroMedico {
     private final int enfermerosRotativos;
     private final int consultoriosDisponibles;
 
-    // Único recepcionista del sistema
-    private final AdministradorDeConsultas recepcionista;
+    //Administrador de las consultas
+    private final AdministradorDeConsultas administrador;
 
     public CentroMedico(int medicos, int odontologos, int fijos, int rotativos, int consultorios) {
         this.medicosDisponibles = medicos;
@@ -41,11 +41,11 @@ public class CentroMedico {
             SimulacionCentroMedico.EnfermerosRotativos.release();
         }
 
-        // Crear recepcionista único
-        this.recepcionista = new AdministradorDeConsultas("Recepcionista");
+        // Crear el administrador de las consultas
+        this.administrador = new AdministradorDeConsultas("Administrador");
     }
 
-    public AdministradorDeConsultas getRecepcionista() {
-        return recepcionista;
+    public AdministradorDeConsultas getAdministrador() {
+        return administrador;
     }
 }

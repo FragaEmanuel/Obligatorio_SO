@@ -61,9 +61,9 @@ public class SimulacionCentroMedico {
         EnfermerosFijos = new Semaphore(0);
         EnfermerosRotativos = new Semaphore(0);
 
-        // Crear centro médico y recepcionista
+        // Crear centro médico y administrador de consultas
         CentroMedico centro = new CentroMedico(cantidadMedicos, cantidadOdontologos, cantidadEnfermerosFijos, cantidadEnfermerosRotativos, cantidadConsultorios);
-        AdministradorDeConsultas recepcionista = centro.getRecepcionista();
+        AdministradorDeConsultas administrador = centro.getAdministrador();
 
 
         // Cargar archivo de entrada
@@ -86,7 +86,7 @@ public class SimulacionCentroMedico {
                 int hora = (horaRaw - 8) * 60 + minutos;
                 Consulta c = new Consulta(tipo, id, hora);
                 System.out.println("...... Consulta cargada: ID " + id + ", tipo " + tipo + ", minuto " + hora);
-                recepcionista.agregarConsulta(c);
+                administrador.agregarConsulta(c);
             }
         }
 
@@ -107,8 +107,8 @@ public class SimulacionCentroMedico {
             }
 
             // Cargar y lanzar consultas del minuto actual
-            recepcionista.actualizarPrioridadConsultasActivas(minuto);
-            List<Consulta> lanzadas = recepcionista.atenderConsultasDisponibles();
+            administrador.actualizarPrioridadConsultasActivas(minuto);
+            List<Consulta> lanzadas = administrador.atenderConsultasDisponibles();
             hilosActivos.addAll(lanzadas);
             System.out.println("* Hilos activos lanzados este minuto: " + lanzadas.size());
 
@@ -137,7 +137,7 @@ public class SimulacionCentroMedico {
             }
 // 🚨 Reintentar lanzar consultas si ya no hay hilos activos y aún hay pendientes
             if (SimulacionCentroMedico.hilosActivos.isEmpty()) {
-                List<Consulta> nuevas = recepcionista.atenderConsultasDisponibles();
+                List<Consulta> nuevas = administrador.atenderConsultasDisponibles();
                 hilosActivos.addAll(nuevas);
                 if (!nuevas.isEmpty()) {
                     System.out.println("+++ Relanzadas consultas tras liberar recursos: " + nuevas.size());
@@ -152,7 +152,7 @@ public class SimulacionCentroMedico {
         for (Consulta c : hilosActivos) {
             c.join(2000);
         }
-        List<Consulta> noLanzadas = recepcionista.obtenerConsultasNoLanzadas();
+        List<Consulta> noLanzadas = administrador.obtenerConsultasNoLanzadas();
         for (Consulta c : noLanzadas) {
             c.marcarPerdida("no se pudieron asignar recursos durante toda la simulación");
         }
