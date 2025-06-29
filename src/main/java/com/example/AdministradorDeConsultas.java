@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-public class Recepcionista {
+public class AdministradorDeConsultas {
 
     private final String nombre;
     private final Queue<Consulta> consultasPendientes = new PriorityBlockingQueue<>();
 
-    public Recepcionista(String nombre) {
+    public AdministradorDeConsultas(String nombre) {
         this.nombre = nombre;
     }
 

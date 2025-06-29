@@ -50,6 +50,10 @@ public class SimulacionCentroMedico {
     }
 
     public static void iniciar() throws InterruptedException {
+        //Inicialización de archivo de resultados
+        String archivoSalida = "src/main/java/com/example/Salidas/ResultadoFinal.csv";
+        ManejadorArchivosGenerico.escribirArchivo(archivoSalida, new String[0]);
+
         // Inicialización de semáforos en 0, se llenan en CentroMedico
         consultaoriodisponibles = new Semaphore(0);
         MedicosDisponibles = new Semaphore(0);
@@ -59,7 +63,7 @@ public class SimulacionCentroMedico {
 
         // Crear centro médico y recepcionista
         CentroMedico centro = new CentroMedico(cantidadMedicos, cantidadOdontologos, cantidadEnfermerosFijos, cantidadEnfermerosRotativos, cantidadConsultorios);
-        Recepcionista recepcionista = centro.getRecepcionista();
+        AdministradorDeConsultas recepcionista = centro.getRecepcionista();
 
 
         // Cargar archivo de entrada
@@ -165,7 +169,6 @@ public class SimulacionCentroMedico {
                 "----------------------------------------------------------------------------------------------"
         };
 
-        String archivoSalida = "src/main/java/com/example/Salidas/P.csv";
         ManejadorArchivosGenerico.escribirArchivo(archivoSalida, salida);
 
         System.out.println("/// Simulación finalizada. Archivo generado: " + archivoSalida);

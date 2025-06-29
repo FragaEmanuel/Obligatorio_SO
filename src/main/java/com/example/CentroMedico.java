@@ -10,7 +10,7 @@ public class CentroMedico {
     private final int consultoriosDisponibles;
 
     // Único recepcionista del sistema
-    private final Recepcionista recepcionista;
+    private final AdministradorDeConsultas recepcionista;
 
     public CentroMedico(int medicos, int odontologos, int fijos, int rotativos, int consultorios) {
         this.medicosDisponibles = medicos;
@@ -42,10 +42,10 @@ public class CentroMedico {
         }
 
         // Crear recepcionista único
-        this.recepcionista = new Recepcionista("Recepcionista");
+        this.recepcionista = new AdministradorDeConsultas("Recepcionista");
     }
 
-    public Recepcionista getRecepcionista() {
+    public AdministradorDeConsultas getRecepcionista() {
         return recepcionista;
     }
 }
